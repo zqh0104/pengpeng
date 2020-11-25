@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('用户提现记录列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <p>用户id：</p>
+                                <input type="text" name="userId"/>
+                            </li>
+                            <li>
+                                <p>提现方式：</p>
+                                <select name="withdrawWay">
+                                    <option value="">所有</option>
+                                    <option th:value="1">微信</option>
+                                    <option th:value="2">支付宝</option>
+                                </select>
+                            </li>
+                            <li>
+                                <p>提现金额：</p>
+                                <input type="text" name="withdrawGold"/>
+                            </li>
+                            <li>
+                                <p>提现账户：</p>
+                                <input type="text" name="withdrawAccount"/>
+                            </li>
+                            <li>
+                                <p>提现状态：</p>
+                                <select name="withdrawStatus">
+                                    <option value="">所有</option>
+                                    <option value="0">审核不通过</option>
+                                    <option value="1">审核中</option>
+                                    <option value="2">审核通过</option>
+                                    <option value="3">已打款</option>
+                                </select>
+                            </li>
+                            <!--<li class="select-time">
+                                <p>提现时间：</p>
+                                <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginWithdrawTime]"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endWithdrawTime]"/>
+                            </li>-->
+                            <li>
+                                <p>拒绝原因：</p>
+                                <input type="text" name="withdrawCause"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:record:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:record:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:record:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:record:export">
+                    <i class="fa fa-download"></i> 导出
+                 </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('system:record:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('system:record:remove')}]];
+        var prefix = ctx + "app/withdrawrecord";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "用户提现记录",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field : 'withdrawId', 
+                    title : '提现记录表',
+                    visible: false
+                },
+                {
+                    field : 'userId', 
+                    title : '用户id'
+                },
+                {
+                    field : 'withdrawWay', 
+                    title : '提现方式',
+                    formatter: function (value, row, index) {
+                        if (value == 1) {
+                            return "微信"
+                        } else {
+                            return "支付宝"
+                        }
+                    }
+
+                },
+                {
+                    field : 'withdrawGold', 
+                    title : '提现金额'
+                },
+                {
+                    field : 'withdrawAccount', 
+                    title : '提现账户'
+                },
+                {
+                    field : 'withdrawStatus', 
+                    title : '提现状态',
+                    formatter: function (value, row, index) {
+                        if (value == 0) {
+                            return "审核不通过"
+                        } else if (value == 1){
+                            return "审核中"
+                        }else if(value == 2){
+                            return "审核通过"
+                        }else if (value == 3){
+                            return "已打款"
+                        }
+                    }
+                },
+                {
+                    field : 'withdrawTime', 
+                    title : '提现时间'
+                },
+                {
+                    field : 'withdrawCause', 
+                    title : '拒绝原因'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.withdrawId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.withdrawId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

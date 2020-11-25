@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改用户信用分数')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-score-edit" th:object="${cctUserScore}">
+            <input name="id" th:field="*{id}" type="hidden">
+            <input name="uId" th:field="*{uId}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">分数：</label>
+                <div class="col-sm-8">
+                    <input name="score" th:field="*{score}" class="form-control" type="number">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript">
+        var prefix = ctx + "score";
+        $("#form-score-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-score-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

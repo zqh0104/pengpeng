@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('点赞记录列表')"/>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+<!--        <div class="col-sm-12 search-collapse">-->
+<!--            <form id="formId">-->
+<!--                <div class="select-list">-->
+<!--                    <ul>-->
+<!--                        <li>-->
+<!--                            <p>动态id：</p>-->
+<!--                            <input type="text" name="dynamicId"/>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <p>用户id：</p>-->
+<!--                            <input type="text" name="userId"/>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <p>发布者id：</p>-->
+<!--                            <input type="text" name="toUid"/>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <p>状态(0:取消 1:正常)：</p>-->
+<!--                            <select name="status">-->
+<!--                                <option value="">所有</option>-->
+<!--                            </select>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <p>是否已读(0:未读 1:已读)：</p>-->
+<!--                            <input type="text" name="isread"/>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i-->
+<!--                                    class="fa fa-search"></i>&nbsp;搜索</a>-->
+<!--                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i-->
+<!--                                    class="fa fa-refresh"></i>&nbsp;重置</a>-->
+<!--                        </li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </div>-->
+
+        <div class="btn-group-sm" id="toolbar" role="group">
+<!--            <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:record:add">-->
+<!--                <i class="fa fa-plus"></i> 添加-->
+<!--            </a>-->
+<!--            <a class="btn btn-primary single disabled" onclick="$.operate.edit()"-->
+<!--               shiro:hasPermission="system:record:edit">-->
+<!--                <i class="fa fa-edit"></i> 修改-->
+<!--            </a>-->
+            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()"
+               shiro:hasPermission="system:record:remove">
+                <i class="fa fa-remove"></i> 删除
+            </a>
+            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:record:export">
+                <i class="fa fa-download"></i> 导出
+            </a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('system:record:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('system:record:remove')}]];
+    var prefix = ctx + "app/commend";
+
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "点赞记录",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: '是否已读(0:未读 1:已读)',
+                    visible: false
+                },
+                {
+                    field: 'dynamicId',
+                    title: '点赞动态id'
+                },
+                {
+                    field: 'userId',
+                    title: '点赞用户id'
+                },
+                {
+                    field: 'toUid',
+                    title: '发布者id'
+                },
+                {
+                    field: 'status',
+                    title: '状态',
+                    formatter: function (value, row, index) {
+                        if (value == 0) {
+                            return "已取消"
+                        } else {
+                            return "点赞成功"
+                        }
+                    }
+                },
+                {
+                    field: 'isread',
+                    title: '是否已读',
+                    formatter: function (value, row, index) {
+                        if (value == 0) {
+                            return "未读"
+                        } else {
+                            return "已读"
+                        }
+                    }
+                },
+                {
+                    field: 'createTime',
+                    title: '点赞时间'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        // actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    });
+</script>
+</body>
+</html>

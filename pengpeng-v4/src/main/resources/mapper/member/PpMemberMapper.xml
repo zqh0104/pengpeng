@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.member.PpMemberMapper">
+
+    <resultMap type="com.pengpeng.v4.pojo.member.PpMember" id="PpMemberResult">
+        <result property="id"    column="id"    />
+        <result property="nickname"    column="nickname"    />
+        <result property="sex"    column="sex"    />
+        <result property="headUrl"    column="head_url"    />
+        <result property="birthday"    column="birthday"    />
+        <result property="stature"    column="stature"    />
+        <result property="distance"    column="distance"    />
+        <result property="weight"    column="weight"    />
+        <result property="signature"    column="signature"    />
+        <result property="constellation"    column="constellation"    />
+        <result property="hobby"    column="hobby"    />
+        <result property="profession"    column="profession"    />
+        <result property="picture"    column="picture"    />
+        <result property="invitationCode"    column="Invitation_code"    />
+        <result property="emotionStatus"    column="emotion_status"    />
+        <result property="makeFriendsPurpose"    column="make_friends_purpose"    />
+        <result property="city"    column="city"    />
+        <result property="country"    column="country"    />
+        <result property="address"    column="address"    />
+        <result property="phone"    column="phone"    />
+        <result property="code"    column="code"    />
+        <result property="longitude"    column="longitude"    />
+        <result property="latitude"    column="latitude"    />
+        <result property="isvip"    column="isvip"    />
+        <result property="attribute"    column="attribute"    />
+        <result property="vipOpenTime"    column="vip_open_time"    />
+        <result property="vipCloseTime"    column="vip_close_time"    />
+        <result property="balance"    column="balance"    />
+        <result property="earnings"    column="earnings"    />
+        <result property="treasure"    column="treasure"    />
+        <result property="treasureLevel"    column="treasure_level"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="parentId" column="parent_id"/>
+        <result property="isactive" column="isactive"/>
+        <result property="age" column="age"/>
+    </resultMap>
+
+
+    <resultMap type="com.pengpeng.v4.pojo.member.PpMember" id="PpMemberFilesResult">
+        <result property="id"    column="id"    />
+        <result property="nickname"    column="nickname"    />
+        <result property="headUrl"    column="head_url"    />
+        <result property="birthday"    column="birthday"    />
+        <result property="stature"    column="stature"    />
+        <result property="weight"    column="weight"    />
+        <result property="signature"    column="signature"    />
+        <result property="attribute"    column="attribute"    />
+        <result property="constellation"    column="constellation"    />
+        <result property="hobby"    column="hobby"    />
+        <result property="profession"    column="profession"    />
+        <result property="picture"    column="picture"    />
+        <result property="invitationCode"    column="Invitation_code"    />
+        <result property="emotionStatus"    column="emotion_status"    />
+        <result property="makeFriendsPurpose"    column="make_friends_purpose"    />
+        <result property="city"    column="city"    />
+        <result property="country"    column="country"    />
+        <result property="address"    column="address"    />
+        <result property="phone"    column="phone"    />
+        <result property="code"    column="code"    />
+        <result property="longitude"    column="longitude"    />
+        <result property="latitude"    column="latitude"    />
+        <result property="isvip"    column="isvip"    />
+        <result property="vipOpenTime"    column="vip_open_time"    />
+        <result property="vipCloseTime"    column="vip_close_time"    />
+        <result property="balance"    column="balance"    />
+        <result property="earnings"    column="earnings"    />
+        <result property="treasure"    column="treasure"    />
+        <result property="treasureLevel"    column="treasure_level"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="parentId" column="parent_id"/>
+        <result property="isactive" column="isactive"/>
+        <result property="sex" column="sex"/>
+        <collection property="ppFiles" ofType="com.pengpeng.v4.pojo.files.PpFiles">
+            <result property="id"    column="id"    />
+            <result property="fileId"    column="file_id"    />
+            <result property="fileUrl"    column="file_url"    />
+            <result property="fileType"    column="file_type"    />
+            <result property="fileSource"    column="file_source"    />
+            <result property="createTime"    column="create_time"    />
+        </collection>
+    </resultMap>
+
+    <resultMap type="com.pengpeng.v4.pojo.member.PpMember" id="PpMemberLilkeResult">
+        <result property="id"    column="id"    />
+        <result property="nickname"    column="nickname"    />
+        <result property="headUrl"    column="head_url"    />
+        <result property="birthday"    column="birthday"    />
+        <result property="stature"    column="stature"    />
+        <result property="weight"    column="weight"    />
+        <result property="signature"    column="signature"    />
+        <result property="attribute"    column="attribute"    />
+        <result property="constellation"    column="constellation"    />
+        <result property="hobby"    column="hobby"    />
+        <result property="profession"    column="profession"    />
+        <result property="picture"    column="picture"    />
+        <result property="invitationCode"    column="Invitation_code"    />
+        <result property="emotionStatus"    column="emotion_status"    />
+        <result property="makeFriendsPurpose"    column="make_friends_purpose"    />
+        <result property="city"    column="city"    />
+        <result property="country"    column="country"    />
+        <result property="address"    column="address"    />
+        <result property="phone"    column="phone"    />
+        <result property="code"    column="code"    />
+        <result property="longitude"    column="longitude"    />
+        <result property="latitude"    column="latitude"    />
+        <result property="isvip"    column="isvip"    />
+        <result property="vipOpenTime"    column="vip_open_time"    />
+        <result property="vipCloseTime"    column="vip_close_time"    />
+        <result property="balance"    column="balance"    />
+        <result property="earnings"    column="earnings"    />
+        <result property="treasure"    column="treasure"    />
+        <result property="treasureLevel"    column="treasure_level"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="parentId" column="parent_id"/>
+        <result property="age" column="age"/>
+        <result property="filenumber" column="filenumber"/>
+        <result property="isactive" column="isactive"/>
+
+        <collection property="ppFiles" ofType="com.pengpeng.v4.pojo.files.PpFiles">
+            <result property="id"    column="id"    />
+            <result property="fileId"    column="file_id"    />
+            <result property="fileUrl"    column="file_url"    />
+            <result property="fileType"    column="file_type"    />
+            <result property="fileSource"    column="file_source"    />
+            <result property="createTime"    column="create_time"    />
+        </collection>
+    </resultMap>
+
+    <sql id="selectPpMemberVo">
+        select id, nickname,sex, head_url, birthday, stature, weight, signature, constellation, hobby, profession, Invitation_code,parent_id,isactive,attribute,
+	TIMESTAMPDIFF( YEAR, birthday, NOW( ) )age, emotion_status, make_friends_purpose, city, country, address, longitude, latitude, isvip, vip_open_time, vip_close_time, balance, earnings, treasure, treasure_level, create_time, update_time from pp_member
+    </sql>
+
+    <select id="selectPpMemberList" parameterType="com.pengpeng.v4.pojo.member.PpMember" resultMap="PpMemberResult">
+        <include refid="selectPpMemberVo"/>
+        <where>
+            <if test="nickname != null  and nickname != ''"> and nickname like concat('%', #{nickname}, '%')</if>
+            <if test="headUrl != null  and headUrl != ''"> and head_url = #{headUrl}</if>
+            <if test="birthday != null "> and birthday = #{birthday}</if>
+            <if test="stature != null "> and stature = #{stature}</if>
+            <if test="weight != null "> and weight = #{weight}</if>
+            <if test="signature != null  and signature != ''"> and signature = #{signature}</if>
+            <if test="constellation != null  and constellation != ''"> and constellation = #{constellation}</if>
+            <if test="hobby != null  and hobby != ''"> and hobby = #{hobby}</if>
+            <if test="profession != null  and profession != ''"> and profession = #{profession}</if>
+            <if test="picture != null  and picture != ''"> and picture = #{picture}</if>
+            <if test="invitationCode != null and invitationCode !=''"> and Invitation_code = #{invitationCode}</if>
+            <if test="emotionStatus != null and emotionStatus !=''"> and emotion_status = #{emotionStatus}</if>
+            <if test="makeFriendsPurpose != null  and makeFriendsPurpose != ''"> and make_friends_purpose = #{makeFriendsPurpose}</if>
+            <if test="city != null  and city != ''"> and city = #{city}</if>
+            <if test="country != null  and country != ''"> and country = #{country}</if>
+            <if test="address != null  and address != ''"> and address like concat("%",#{address},"%") </if>
+            <if test="longitude != null "> and longitude = #{longitude}</if>
+            <if test="latitude != null "> and latitude = #{latitude}</if>
+            <if test="isvip != null "> and isvip = #{isvip}</if>
+            <if test="vipOpenTime != null "> and vip_open_time = #{vipOpenTime}</if>
+            <if test="vipCloseTime != null "> and vip_close_time = #{vipCloseTime}</if>
+            <if test="balance != null "> and balance = #{balance}</if>
+            <if test="earnings != null "> and earnings = #{earnings}</if>
+            <if test="treasure != null "> and treasure = #{treasure}</if>
+            <if test="treasureLevel != null  and treasureLevel != ''"> and treasure_level = #{treasureLevel}</if>
+        </where>
+    </select>
+
+    <select id="selectPpMemberById" resultMap="PpMemberLilkeResult">
+        <include refid="selectPpMemberVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertPpMember" parameterType="com.pengpeng.v4.pojo.member.PpMember" useGeneratedKeys="true" keyProperty="id">
+        insert into pp_member
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="nickname != null  and nickname != ''">nickname,</if>
+            <if test="headUrl != null  and headUrl != ''">head_url,</if>
+            <if test="birthday != null ">birthday,</if>
+            <if test="stature != null ">stature,</if>
+            <if test="weight != null ">weight,</if>
+            <if test="signature != null  and signature != ''">signature,</if>
+            <if test="constellation != null  and constellation != ''">constellation,</if>
+            <if test="hobby != null  and hobby != ''">hobby,</if>
+            <if test="profession != null  and profession != ''">profession,</if>
+            <if test="picture != null  and picture != ''">picture,</if>
+            <if test="invitationCode != null ">Invitation_code,</if>
+            <if test="emotionStatus != null ">emotion_status,</if>
+            <if test="makeFriendsPurpose != null  and makeFriendsPurpose != ''">make_friends_purpose,</if>
+            <if test="city != null  and city != ''">city,</if>
+            <if test="country != null  and country != ''">country,</if>
+            <if test="address != null  and address != ''">address,</if>
+            <if test="longitude != null ">longitude,</if>
+            <if test="latitude != null ">latitude,</if>
+            <if test="phone != null ">phone,</if>
+            <if test="code != null ">code,</if>
+            <if test="isvip != null ">isvip,</if>
+            <if test="vipOpenTime != null ">vip_open_time,</if>
+            <if test="vipCloseTime != null ">vip_close_time,</if>
+            <if test="balance != null ">balance,</if>
+            <if test="earnings != null ">earnings,</if>
+            <if test="treasure != null ">treasure,</if>
+            <if test="treasureLevel != null  and treasureLevel != ''">treasure_level,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="nickname != null  and nickname != ''">#{nickname},</if>
+            <if test="headUrl != null  and headUrl != ''">#{headUrl},</if>
+            <if test="birthday != null ">#{birthday},</if>
+            <if test="stature != null ">#{stature},</if>
+            <if test="weight != null ">#{weight},</if>
+            <if test="signature != null  and signature != ''">#{signature},</if>
+            <if test="constellation != null  and constellation != ''">#{constellation},</if>
+            <if test="hobby != null  and hobby != ''">#{hobby},</if>
+            <if test="profession != null  and profession != ''">#{profession},</if>
+            <if test="picture != null  and picture != ''">#{picture},</if>
+            <if test="invitationCode != null ">#{invitationCode},</if>
+            <if test="emotionStatus != null ">#{emotionStatus},</if>
+            <if test="makeFriendsPurpose != null  and makeFriendsPurpose != ''">#{makeFriendsPurpose},</if>
+            <if test="city != null  and city != ''">#{city},</if>
+            <if test="country != null  and country != ''">#{country},</if>
+            <if test="address != null  and address != ''">#{address},</if>
+            <if test="longitude != null ">#{longitude},</if>
+            <if test="latitude != null ">#{latitude},</if>
+            <if test="phone != null ">#{phone},</if>
+            <if test="code != null ">#{code},</if>
+            <if test="isvip != null ">#{isvip},</if>
+            <if test="vipOpenTime != null ">#{vipOpenTime},</if>
+            <if test="vipCloseTime != null ">#{vipCloseTime},</if>
+            <if test="balance != null ">#{balance},</if>
+            <if test="earnings != null ">#{earnings},</if>
+            <if test="treasure != null ">#{treasure},</if>
+            <if test="treasureLevel != null  and treasureLevel != ''">#{treasureLevel},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+    <insert id="insertPpLoginAccount" parameterType="com.pengpeng.v4.pojo.login.PpLogin">
+        insert into pp_login
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="memberId != null ">member_id,</if>
+            <if test="loginPhone != null  and loginPhone != ''">login_phone,</if>
+            <if test="loginName != null  and loginName != ''">login_name,</if>
+            <if test="password != null  and password != ''">password,</if>
+            <if test="salt != null  and salt != ''">salt,</if>
+            <if test="status != null  and status != ''">status,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="memberId != null ">#{memberId},</if>
+            <if test="loginPhone != null  and loginPhone != ''">#{loginPhone},</if>
+            <if test="loginName != null  and loginName != ''">#{loginName},</if>
+            <if test="password != null  and password != ''">#{password},</if>
+            <if test="salt != null  and salt != ''">#{salt},</if>
+            <if test="status != null  and status != ''">#{status},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <select id="selectPpLoginByPhoneExist" parameterType="String" resultType="Integer">
+        select count(1) from pp_login
+        where login_phone = #{phone}
+    </select>
+    <select id="selectPpLoginByPhone" resultType="com.pengpeng.v4.pojo.member.PpMember">
+        select * from pp_member
+        where phone = #{phone}
+    </select>
+
+    <update id="updatePpMember" parameterType="com.pengpeng.v4.pojo.member.PpMember">
+        update pp_member
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="nickname != null  and nickname != ''">nickname = #{nickname},</if>
+            <if test="sex != null  and sex != ''">sex = #{sex},</if>
+            <if test="headUrl != null  and headUrl != ''">head_url = #{headUrl},</if>
+            <if test="birthday != null ">birthday = #{birthday},</if>
+            <if test="stature != null ">stature = #{stature},</if>
+            <if test="weight != null ">weight = #{weight},</if>
+            <if test="signature != null  and signature != ''">signature = #{signature},</if>
+            <if test="constellation != null  and constellation != ''">constellation = #{constellation},</if>
+            <if test="hobby != null  and hobby != ''">hobby = #{hobby},</if>
+            <if test="profession != null  and profession != ''">profession = #{profession},</if>
+            <if test="picture != null  and picture != ''">picture = #{picture},</if>
+            <if test="invitationCode != null ">Invitation_code = #{invitationCode},</if>
+            <if test="emotionStatus != null ">emotion_status = #{emotionStatus},</if>
+            <if test="makeFriendsPurpose != null  and makeFriendsPurpose != ''">make_friends_purpose = #{makeFriendsPurpose},</if>
+            <if test="city != null  and city != ''">city = #{city},</if>
+            <if test="country != null  and country != ''">country = #{country},</if>
+            <if test="address != null  and address != ''">address = #{address},</if>
+            <if test="longitude != null ">longitude = #{longitude},</if>
+            <if test="latitude != null ">latitude = #{latitude},</if>
+            <if test="isvip != null ">isvip = #{isvip},</if>
+            <if test="vipOpenTime != null ">vip_open_time = #{vipOpenTime},</if>
+            <if test="vipCloseTime != null ">vip_close_time = #{vipCloseTime},</if>
+            <if test="balance != null ">balance = #{balance},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="earnings != null ">earnings = #{earnings},</if>
+            <if test="treasure != null ">treasure = #{treasure},</if>
+            <if test="attribute != null ">attribute = #{attribute},</if>
+            <if test="treasureLevel != null  and treasureLevel != ''">treasure_level = #{treasureLevel},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePpMemberById" parameterType="Long">
+        delete from pp_member where id = #{id}
+    </delete>
+
+    <delete id="deletePpMemberByIds" parameterType="String">
+        delete from pp_member where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectInvitationCode" resultMap="PpMemberResult">
+        <include refid="selectPpMemberVo"/>
+        where Invitation_code =#{invitationCode}
+    </select>
+
+    <select id="selectUserAndFiles" resultMap="PpMemberFilesResult">
+        select t1.*,t2.*,count(*) as filenumber
+		from (select id, TIMESTAMPDIFF(YEAR, birthday,NOW()) as age, nickname,sex, head_url, birthday, stature, weight, signature, constellation, hobby, profession, Invitation_code,parent_id,attribute, emotion_status, make_friends_purpose, city, country, address, longitude, latitude, isvip, vip_open_time, vip_close_time, balance, earnings, treasure, treasure_level, create_time, update_time from pp_member) t1
+		left join pp_files t2
+		on t1.id=t2.file_id
+		where t1.id =#{userId}
+    </select>
+    <select id="selectIndexMemberList" resultMap="PpMemberResult">
+        <if test="ppMember.rangMin!=null and ppMember.rangMax!=null">
+            SELECT * FROM (
+        </if>
+        SELECT memb.*,
+        ROUND(
+        6378.138 * 2 * ASIN(
+        SQRT(
+        POW( SIN( ( #{ppMember.latitude} * PI( ) / 180 - memb.latitude * PI( ) / 180 ) / 2 ), 2 ) + COS( #{ppMember.latitude}
+        * PI( ) / 180 )
+        * COS( memb.latitude * PI( ) / 180 ) * POW( SIN( ( #{ppMember.longitude} * PI( ) / 180 - memb.longitude * PI( ) / 180 ) /
+        2 ), 2 ))) * 1000 ) / 1000 AS distance
+        FROM
+        pp_member memb
+        LEFT JOIN ( SELECT id age_user_id, TIMESTAMPDIFF( YEAR, birthday, NOW( ) ) AS age FROM pp_member ) tab ON memb.id = tab.age_user_id
+        <where>
+            memb.id not in
+            <if test="blackIds!=null and blackIds.size()>0">
+                <foreach collection="blackIds" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="ppMember.sex != null  and ppMember.sex != ''">and memb.sex = #{ppMember.sex}</if>
+            <if test="ppMember.ageMin !=null and ppMember.ageMax !=null">
+                and (tab.age BETWEEN #{ppMember.ageMin} and #{ppMember.ageMax})
+            </if>
+            <if test="ppMember.address !=null and ppMember.address !=''">
+                and memb.address = #{ppMember.address}
+            </if>
+            <if test="ppMember.emotionStatus !=null and ppMember.emotionStatus !=''">
+                and memb.emotion_status = #{ppMember.emotionStatus}
+            </if>
+            <if test="ppMember.attribute !=null and ppMember.attribute !=''">
+                and memb.attribute = #{ppMember.attribute}
+            </if>
+            <if test="ppMember.nickName !=null and ppMember.nickName !=''">
+                and memb.nickname like concat("%", #{ppMember.nickName},"%")
+            </if>
+        </where>
+        ORDER BY
+        distance ASC
+        <if test="ppMember.rangMin!=null and ppMember.rangMax!=null">
+            ) t WHERE t.distance BETWEEN #{ppMember.rangMin} and #{ppMember.rangMax}
+        </if>
+    </select>
+
+    <select id="selectList" resultMap="PpMemberResult">
+       select id,isvip, vip_open_time, vip_close_time from pp_member
+    </select>
+
+    <select id="selectFileUser" resultMap="PpMemberLilkeResult">
+        select t1.*,t2.*,count(*) as filenumber
+		from (select id, TIMESTAMPDIFF(YEAR, birthday,NOW()) as age, nickname,sex, head_url, birthday, stature, weight, signature, constellation, hobby, profession, Invitation_code,parent_id,attribute, emotion_status, make_friends_purpose, city, country, address, longitude, latitude, isvip, vip_open_time, vip_close_time, balance, earnings, treasure, treasure_level, create_time, update_time,isactive from pp_member) t1
+		left join pp_files t2
+		on t1.id=t2.file_id
+		where t1.id =#{id}
+    </select>
+</mapper>

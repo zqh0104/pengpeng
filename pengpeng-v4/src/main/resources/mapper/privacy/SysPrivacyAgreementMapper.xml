@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.privacy.SysPrivacyAgreementMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.privacy.SysPrivacyAgreement" id="SysPrivacyAgreementResult">
+        <result property="id"    column="id"    />
+        <result property="agreementContent"    column="agreement_content"    />
+    </resultMap>
+
+    <sql id="selectSysPrivacyAgreementVo">
+        select id, agreement_content from sys_privacy_agreement
+    </sql>
+
+    <select id="selectSysPrivacyAgreementList" parameterType="com.pengpeng.v4.pojo.privacy.SysPrivacyAgreement" resultMap="SysPrivacyAgreementResult">
+        <include refid="selectSysPrivacyAgreementVo"/>
+        <where>  
+            <if test="agreementContent != null  and agreementContent != ''"> and agreement_content = #{agreementContent}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysPrivacyAgreementById" parameterType="Long" resultMap="SysPrivacyAgreementResult">
+        <include refid="selectSysPrivacyAgreementVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysPrivacyAgreement" parameterType="com.pengpeng.v4.pojo.privacy.SysPrivacyAgreement" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_privacy_agreement
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="agreementContent != null  and agreementContent != ''">agreement_content,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="agreementContent != null  and agreementContent != ''">#{agreementContent},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysPrivacyAgreement" parameterType="com.pengpeng.v4.pojo.privacy.SysPrivacyAgreement">
+        update sys_privacy_agreement
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="agreementContent != null  and agreementContent != ''">agreement_content = #{agreementContent},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysPrivacyAgreementById" parameterType="Long">
+        delete from sys_privacy_agreement where id = #{id}
+    </delete>
+
+    <delete id="deleteSysPrivacyAgreementByIds" parameterType="String">
+        delete from sys_privacy_agreement where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

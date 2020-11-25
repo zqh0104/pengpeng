@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.gift.PpGiftMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.gift.PpGift" id="PpGiftResult">
+        <result property="id"    column="id"    />
+        <result property="giftName"    column="gift_name"    />
+        <result property="diamond"    column="diamond"    />
+        <result property="money"    column="money"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="giftUrl" column="gift_url"/>
+    </resultMap>
+
+    <sql id="selectPpGiftVo">
+        select id, gift_name, diamond, money, status,gift_url, create_time, update_time from pp_gift
+    </sql>
+
+    <select id="selectPpGiftList" parameterType="com.pengpeng.v4.pojo.gift.PpGift" resultMap="PpGiftResult">
+        <include refid="selectPpGiftVo"/>
+        <where>  
+            <if test="giftName != null  and giftName != ''"> and gift_name like concat('%', #{giftName}, '%')</if>
+            <if test="diamond != null "> and diamond = #{diamond}</if>
+            <if test="money != null "> and money = #{money}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="giftUrl != null and giftUrl != ''"> and gift_url = #{giftUrl}</if>
+        </where>
+    </select>
+    
+    <select id="selectPpGiftById" parameterType="Long" resultMap="PpGiftResult">
+        <include refid="selectPpGiftVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPpGift" parameterType="com.pengpeng.v4.pojo.gift.PpGift">
+        insert into pp_gift
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="giftName != null  and giftName != ''">gift_name,</if>
+            <if test="diamond != null ">diamond,</if>
+            <if test="money != null ">money,</if>
+            <if test="status != null ">status,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="giftUrl != null  and giftUrl != ''">gift_url,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="giftName != null  and giftName != ''">#{giftName},</if>
+            <if test="diamond != null ">#{diamond},</if>
+            <if test="money != null ">#{money},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="giftUrl != null  and giftUrl != ''">#{giftUrl},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePpGift" parameterType="com.pengpeng.v4.pojo.gift.PpGift">
+        update pp_gift
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="giftName != null  and giftName != ''">gift_name = #{giftName},</if>
+            <if test="diamond != null ">diamond = #{diamond},</if>
+            <if test="money != null ">money = #{money},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="giftUrl != null  and giftUrl != ''">gift_url = #{giftUrl},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePpGiftById" parameterType="Long">
+        delete from pp_gift where id = #{id}
+    </delete>
+
+    <delete id="deletePpGiftByIds" parameterType="String">
+        delete from pp_gift where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="giftList" resultMap="PpGiftResult">
+        <include refid="selectPpGiftVo"/>
+    </select>
+    
+</mapper>

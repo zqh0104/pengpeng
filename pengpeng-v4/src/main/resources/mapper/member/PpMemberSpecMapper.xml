@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.member.PpMemberSpecMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.member.PpMemberSpec" id="PpMemberSpecResult">
+        <result property="id"    column="id"    />
+        <result property="memberMoney"    column="member_money"    />
+        <result property="currentPrice"    column="current_price"    />
+        <result property="memberSecond"    column="member_second"    />
+        <result property="memberSecondType"    column="member_second_type"    />
+    </resultMap>
+
+    <sql id="selectPpMemberSpecVo">
+        select id, member_money, current_price, member_second, member_second_type from pp_member_spec
+    </sql>
+
+    <select id="selectPpMemberSpecList" parameterType="com.pengpeng.v4.pojo.member.PpMemberSpec" resultMap="PpMemberSpecResult">
+        <include refid="selectPpMemberSpecVo"/>
+        <where>
+            <if test="memberMoney != null  and memberMoney != ''"> and member_money = #{memberMoney}</if>
+            <if test="currentPrice != null  and currentPrice != ''"> and current_price = #{currentPrice}</if>
+            <if test="memberSecond != null  and memberSecond != ''"> and member_second = #{memberSecond}</if>
+            <if test="memberSecondType != null  and memberSecondType != ''"> and member_second_type = #{memberSecondType}</if>
+        </where>
+    </select>
+    
+    <select id="selectPpMemberSpecById" parameterType="Long" resultMap="PpMemberSpecResult">
+        <include refid="selectPpMemberSpecVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertPpMemberSpec" parameterType="com.pengpeng.v4.pojo.member.PpMemberSpec" useGeneratedKeys="true" keyProperty="id">
+        insert into pp_member_spec
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="memberMoney != null  and memberMoney != ''">member_money,</if>
+            <if test="currentPrice != null  and currentPrice != ''">current_price,</if>
+            <if test="memberSecond != null  and memberSecond != ''">member_second,</if>
+            <if test="memberSecondType != null  and memberSecondType != ''">member_second_type,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="memberMoney != null  and memberMoney != ''">#{memberMoney},</if>
+            <if test="currentPrice != null  and currentPrice != ''">#{currentPrice},</if>
+            <if test="memberSecond != null  and memberSecond != ''">#{memberSecond},</if>
+            <if test="memberSecondType != null  and memberSecondType != ''">#{memberSecondType},</if>
+        </trim>
+    </insert>
+
+    <update id="updatePpMemberSpec" parameterType="com.pengpeng.v4.pojo.member.PpMemberSpec">
+        update pp_member_spec
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="memberMoney != null  and memberMoney != ''">member_money = #{memberMoney},</if>
+            <if test="currentPrice != null  and currentPrice != ''">current_price = #{currentPrice},</if>
+            <if test="memberSecond != null  and memberSecond != ''">member_second = #{memberSecond},</if>
+            <if test="memberSecondType != null  and memberSecondType != ''">member_second_type = #{memberSecondType},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePpMemberSpecById" parameterType="Long">
+        delete from pp_member_spec where id = #{id}
+    </delete>
+
+    <delete id="deletePpMemberSpecByIds" parameterType="String">
+        delete from pp_member_spec where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="memberSpecList" resultMap="PpMemberSpecResult">
+        <include refid="selectPpMemberSpecVo"/>
+    </select>
+    
+</mapper>

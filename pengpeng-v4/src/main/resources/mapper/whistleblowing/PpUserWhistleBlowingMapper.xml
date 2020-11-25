@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.whistleblowing.PpUserWhistleBlowingMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.whistleblowing.PpUserWhistleBlowing" id="PpUserWhistleBlowingResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="nickname"    column="nickname"    />
+        <result property="reportUserName"    column="reportUserName"    />
+        <result property="reportUserId"    column="report_user_id"    />
+        <result property="reportType"    column="report_type"    />
+        <result property="reportContent"    column="report_content"    />
+        <result property="reportImage"    column="report_image"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectPpUserWhistleBlowingVo">
+        select id, user_id, report_user_id, report_content, report_image, create_time from pp_user_whistle_blowing
+    </sql>
+
+    <select id="selectPpUserWhistleBlowingList" parameterType="com.pengpeng.v4.pojo.whistleblowing.PpUserWhistleBlowing" resultMap="PpUserWhistleBlowingResult">
+<!--        <include refid="selectPpUserWhistleBlowingVo"/>-->
+        SELECT
+        blow.id,
+        blow.user_id,
+        blow.report_user_id,
+        blow.report_content,
+        blow.report_type,
+        blow.report_image,
+        blow.create_time ,
+        memb.nickname,
+        memb2.nickname reportUserName
+        FROM
+        pp_user_whistle_blowing blow
+        LEFT JOIN pp_member memb on memb.id = blow.user_id
+        LEFT JOIN pp_member memb2 on memb2.id = blow.report_user_id
+        <where>  
+            <if test="userId != null "> and  blow.user_id = #{userId}</if>
+            <if test="reportUserId != null "> and  blow.report_user_id = #{reportUserId}</if>
+            <if test="reportContent != null  and reportContent != ''"> and  blow.report_content = #{reportContent}</if>
+            <if test="reportImage != null  and reportImage != ''"> and  blow.report_image = #{reportImage}</if>
+        </where>
+    </select>
+    
+    <select id="selectPpUserWhistleBlowingById" parameterType="Long" resultMap="PpUserWhistleBlowingResult">
+        <include refid="selectPpUserWhistleBlowingVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPpUserWhistleBlowing" parameterType="com.pengpeng.v4.pojo.whistleblowing.PpUserWhistleBlowing" useGeneratedKeys="true" keyProperty="id">
+        insert into pp_user_whistle_blowing
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">user_id,</if>
+            <if test="reportUserId != null ">report_user_id,</if>
+            <if test="reportContent != null  and reportContent != ''">report_content,</if>
+            <if test="reportImage != null  and reportImage != ''">report_image,</if>
+            <if test="reportType != null  and reportType != ''">report_type,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">#{userId},</if>
+            <if test="reportUserId != null ">#{reportUserId},</if>
+            <if test="reportContent != null  and reportContent != ''">#{reportContent},</if>
+            <if test="reportImage != null  and reportImage != ''">#{reportImage},</if>
+            <if test="reportType != null  and reportType != ''">#{reportType},</if>
+            <if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePpUserWhistleBlowing" parameterType="com.pengpeng.v4.pojo.whistleblowing.PpUserWhistleBlowing">
+        update pp_user_whistle_blowing
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="reportUserId != null ">report_user_id = #{reportUserId},</if>
+            <if test="reportContent != null  and reportContent != ''">report_content = #{reportContent},</if>
+            <if test="reportImage != null  and reportImage != ''">report_image = #{reportImage},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePpUserWhistleBlowingById" parameterType="Long">
+        delete from pp_user_whistle_blowing where id = #{id}
+    </delete>
+
+    <delete id="deletePpUserWhistleBlowingByIds" parameterType="String">
+        delete from pp_user_whistle_blowing where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

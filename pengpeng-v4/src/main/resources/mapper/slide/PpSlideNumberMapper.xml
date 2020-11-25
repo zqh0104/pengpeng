@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.slide.PpSlideNumberMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.slide.PpSlideNumber" id="PpSlideNumberResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="slideNumber"    column="slide_number"    />
+        <result property="maximumSlideNumber"    column="maximum_slide_number"    />
+        <result property="slideInsertTime"    column="slide_insert_time"    />
+        <result property="slideUpdateTime"    column="slide_update_time"    />
+    </resultMap>
+
+    <sql id="selectPpSlideNumberVo">
+        select id, user_id, slide_number, maximum_slide_number, slide_insert_time, slide_update_time from pp_slide_number
+    </sql>
+
+    <select id="selectPpSlideNumberList" parameterType="com.pengpeng.v4.pojo.slide.PpSlideNumber" resultMap="PpSlideNumberResult">
+        <include refid="selectPpSlideNumberVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="slideNumber != null "> and slide_number = #{slideNumber}</if>
+            <if test="maximumSlideNumber != null "> and maximum_slide_number = #{maximumSlideNumber}</if>
+            <if test="slideInsertTime != null "> and slide_insert_time = #{slideInsertTime}</if>
+            <if test="slideUpdateTime != null "> and slide_update_time = #{slideUpdateTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectPpSlideNumberById" parameterType="Long" resultMap="PpSlideNumberResult">
+        <include refid="selectPpSlideNumberVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPpSlideNumber" parameterType="com.pengpeng.v4.pojo.slide.PpSlideNumber" useGeneratedKeys="true" keyProperty="id">
+        insert into pp_slide_number
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">user_id,</if>
+            <if test="slideNumber != null ">slide_number,</if>
+            <if test="maximumSlideNumber != null ">maximum_slide_number,</if>
+            <if test="slideInsertTime != null ">slide_insert_time,</if>
+            <if test="slideUpdateTime != null ">slide_update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">#{userId},</if>
+            <if test="slideNumber != null ">#{slideNumber},</if>
+            <if test="maximumSlideNumber != null ">#{maximumSlideNumber},</if>
+            <if test="slideInsertTime != null ">#{slideInsertTime},</if>
+            <if test="slideUpdateTime != null ">#{slideUpdateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePpSlideNumber" parameterType="com.pengpeng.v4.pojo.slide.PpSlideNumber">
+        update pp_slide_number
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="slideNumber != null ">slide_number = #{slideNumber},</if>
+            <if test="maximumSlideNumber != null ">maximum_slide_number = #{maximumSlideNumber},</if>
+            <if test="slideInsertTime != null ">slide_insert_time = #{slideInsertTime},</if>
+            <if test="slideUpdateTime != null ">slide_update_time = #{slideUpdateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePpSlideNumberById" parameterType="Long">
+        delete from pp_slide_number where id = #{id}
+    </delete>
+
+    <delete id="deletePpSlideNumberByIds" parameterType="String">
+        delete from pp_slide_number where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectId" parameterType="com.pengpeng.v4.pojo.slide.PpSlideNumber" resultMap="PpSlideNumberResult">
+        select id, user_id, slide_number, maximum_slide_number, slide_insert_time, slide_update_time from pp_slide_number
+        WHERE user_id = #{userId}
+    </select>
+
+    <update id="updateSlideNumber" parameterType="com.pengpeng.v4.pojo.slide.PpSlideNumber">
+         update pp_slide_number set
+            maximum_slide_number = #{maximumSlideNumber},
+		    slide_update_time=NOW()
+        where user_id = #{userId}
+    </update>
+
+    <select id="selectUserById" resultMap="PpSlideNumberResult">
+        <include refid="selectPpSlideNumberVo"/>
+        where user_id = #{userId}
+    </select>
+    
+</mapper>

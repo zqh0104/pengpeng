@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.rechargerecord.PpRechargeRecordMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.rechargerecord.PpRechargeRecord" id="PpRechargeRecordResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="orderSn"    column="order_sn"    />
+        <result property="rechargeMoney"    column="recharge_money"    />
+        <result property="rechargeDiamond"    column="recharge_diamond"    />
+        <result property="rechargeTime"    column="recharge_time"    />
+        <result property="rechargeType" column="recharge_type"/>
+        <result property="rechargeStatus" column="rechage_status"/>
+        <result property="payType" column="pay_type"/>
+    </resultMap>
+
+    <sql id="selectPpRechargeRecordVo">
+        select id, user_id,order_sn, recharge_money, recharge_diamond, recharge_time,recharge_type,rechage_status,pay_type from pp_recharge_record
+    </sql>
+
+    <select id="selectPpRechargeRecordList" parameterType="com.pengpeng.v4.pojo.rechargerecord.PpRechargeRecord" resultMap="PpRechargeRecordResult">
+        <include refid="selectPpRechargeRecordVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="rechargeMoney != null and rechargeMoney !=''"> and recharge_money = #{rechargeMoney}</if>
+            <if test="rechargeDiamond != null "> and recharge_diamond = #{rechargeDiamond}</if>
+            <if test="rechargeTime != null "> and recharge_time = #{rechargeTime}</if>
+            <if test="rechargeType != null "> and recharge_type = #{rechargeType}</if>
+        </where>
+    </select>
+    
+    <select id="selectPpRechargeRecordById" parameterType="Long" resultMap="PpRechargeRecordResult">
+        <include refid="selectPpRechargeRecordVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectPpRechargeRecordByOrderSn" resultMap="PpRechargeRecordResult">
+        <include refid="selectPpRechargeRecordVo"/>
+        where order_sn = #{orderSn}
+    </select>
+
+    <insert id="insertPpRechargeRecord" parameterType="com.pengpeng.v4.pojo.rechargerecord.PpRechargeRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into pp_recharge_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">user_id,</if>
+            <if test="orderSn != null ">order_sn,</if>
+            <if test="rechargeMoney != null ">recharge_money,</if>
+            <if test="rechargeDiamond != null ">recharge_diamond,</if>
+            <if test="rechargeTime != null ">recharge_time,</if>
+            <if test="rechargeType != null ">recharge_type,</if>
+            <if test="rechargeStatus != null ">rechage_status,</if>
+            <if test="payType != null ">pay_type, </if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">#{userId},</if>
+            <if test="orderSn != null ">#{orderSn},</if>
+            <if test="rechargeMoney != null ">#{rechargeMoney},</if>
+            <if test="rechargeDiamond != null ">#{rechargeDiamond},</if>
+            <if test="rechargeTime != null ">#{rechargeTime},</if>
+            <if test="rechargeType != null ">#{rechargeType},</if>
+            <if test="rechargeStatus != null ">#{rechargeStatus},</if>
+            <if test="payType != null "> #{payType},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePpRechargeRecord" parameterType="com.pengpeng.v4.pojo.rechargerecord.PpRechargeRecord">
+        update pp_recharge_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="orderSn != null ">order_sn = #{orderSn},</if>
+            <if test="rechargeMoney != null ">recharge_money = #{rechargeMoney},</if>
+            <if test="rechargeDiamond != null ">recharge_diamond = #{rechargeDiamond},</if>
+            <if test="rechargeTime != null ">recharge_time = #{rechargeTime},</if>
+            <if test="rechargeType != null ">recharge_type = #{rechargeType},</if>
+            <if test="rechargeStatus != null ">rechage_status = #{rechargeStatus},</if>
+            <if test="payType != null ">pay_type = #{payType},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePpRechargeRecordById" parameterType="Long">
+        delete from pp_recharge_record where id = #{id}
+    </delete>
+
+    <delete id="deletePpRechargeRecordByIds" parameterType="String">
+        delete from pp_recharge_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

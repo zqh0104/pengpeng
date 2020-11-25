@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.gift.PpGiftRecordMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.gift.PpGiftRecord" id="PpGiftRecordResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="giftId"    column="gift_id"    />
+        <result property="byUserId"    column="by_user_id"    />
+        <result property="giftType"    column="gift_type"    />
+        <result property="giftNumber"    column="gift_number"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <resultMap type="com.pengpeng.v4.pojo.gift.PpGiftRecord" id="PpGiftRecordSunResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="giftId"    column="gift_id"    />
+        <result property="byUserId"    column="by_user_id"    />
+        <result property="giftType"    column="gift_type"    />
+        <result property="giftNumber"    column="gift_number"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="sumNumber" column="sumNumber"/>
+        <result property="giftName" column="gift_name"/>
+        <result property="giftUrl" column="gift_url"/>
+    </resultMap>
+
+    <sql id="selectPpGiftRecordVo">
+        select id, user_id, by_user_id, gift_type, gift_number,gift_id,create_time from pp_gift_record
+    </sql>
+
+    <select id="selectPpGiftRecordList" parameterType="com.pengpeng.v4.pojo.gift.PpGiftRecord" resultMap="PpGiftRecordResult">
+        <include refid="selectPpGiftRecordVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="byUserId != null "> and by_user_id = #{byUserId}</if>
+            <if test="giftType != null  and giftType != ''"> and gift_type = #{giftType}</if>
+            <if test="giftNumber != null  and giftNumber != ''"> and gift_number = #{giftNumber}</if>
+        </where>
+    </select>
+    
+    <select id="selectPpGiftRecordById" parameterType="Long" resultMap="PpGiftRecordResult">
+        <include refid="selectPpGiftRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPpGiftRecord" parameterType="com.pengpeng.v4.pojo.gift.PpGiftRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into pp_gift_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">user_id,</if>
+            <if test="giftId != null ">gift_id,</if>
+            <if test="byUserId != null ">by_user_id,</if>
+            <if test="giftType != null  and giftType != ''">gift_type,</if>
+            <if test="giftNumber != null  and giftNumber != ''">gift_number,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">#{userId},</if>
+            <if test="giftId != null ">#{giftId},</if>
+            <if test="byUserId != null ">#{byUserId},</if>
+            <if test="giftType != null  and giftType != ''">#{giftType},</if>
+            <if test="giftNumber != null  and giftNumber != ''">#{giftNumber},</if>
+            <if test="createTime != null  ">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePpGiftRecord" parameterType="com.pengpeng.v4.pojo.gift.PpGiftRecord">
+        update pp_gift_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="byUserId != null ">by_user_id = #{byUserId},</if>
+            <if test="giftType != null  and giftType != ''">gift_type = #{giftType},</if>
+            <if test="giftNumber != null  and giftNumber != ''">gift_number = #{giftNumber},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePpGiftRecordById" parameterType="Long">
+        delete from pp_gift_record where id = #{id}
+    </delete>
+
+    <delete id="deletePpGiftRecordByIds" parameterType="String">
+        delete from pp_gift_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="receiveGift" resultMap="PpGiftRecordSunResult">
+        select t1.*,t2.gift_name as gift_name,t2.gift_url as gift_url
+        from (
+              select gift_id,sum(gift_number) as sumNumber from pp_gift_record
+              where by_user_id = #{userId}
+              group by gift_id ) t1
+        join pp_gift t2
+        on t1.gift_id = t2.id
+    </select>
+    
+</mapper>

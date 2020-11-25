@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.system.mapper.SysDistrictMapper">
+    
+    <resultMap type="com.pengpeng.system.domain.SysDistrict" id="SysDistrictResult">
+        <result property="id"    column="id"    />
+        <result property="cityId"    column="city_id"    />
+        <result property="district"    column="district"    />
+    </resultMap>
+
+    <sql id="selectSysDistrictVo">
+        select id, city_id, district from sys_district
+    </sql>
+
+    <select id="selectSysDistrictList" parameterType="com.pengpeng.system.domain.SysDistrict" resultMap="SysDistrictResult">
+        <include refid="selectSysDistrictVo"/>
+        <where>  
+            <if test="cityId != null "> and city_id = #{cityId}</if>
+            <if test="district != null  and district != ''"> and district = #{district}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysDistrictById" parameterType="Long" resultMap="SysDistrictResult">
+        <include refid="selectSysDistrictVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysDistrict" parameterType="com.pengpeng.system.domain.SysDistrict" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_district
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cityId != null ">city_id,</if>
+            <if test="district != null  and district != ''">district,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cityId != null ">#{cityId},</if>
+            <if test="district != null  and district != ''">#{district},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysDistrict" parameterType="com.pengpeng.system.domain.SysDistrict">
+        update sys_district
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cityId != null ">city_id = #{cityId},</if>
+            <if test="district != null  and district != ''">district = #{district},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysDistrictById" parameterType="Long">
+        delete from sys_district where id = #{id}
+    </delete>
+
+    <delete id="deleteSysDistrictByIds" parameterType="String">
+        delete from sys_district where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

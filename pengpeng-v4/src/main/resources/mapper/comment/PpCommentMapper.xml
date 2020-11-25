@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.comment.PpCommentMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.comment.PpComment" id="PpCommentResult">
+        <result property="id"    column="id"    />
+        <result property="dynamicId"    column="dynamic_id"    />
+        <result property="fromUid"    column="from_uid"    />
+        <result property="toUid"    column="to_uid"    />
+        <result property="comment"    column="comment"    />
+        <result property="headImage"    column="head_url"    />
+        <result property="fromName"    column="fromName"    />
+        <result property="toName"    column="toName"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="type"    column="type"    />
+        <result property="treeCode"    column="tree_code"    />
+        <result property="tree"    column="tree"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="headImage"    column="head_url"    />
+        <result property="fileUrl"    column="file_url"    />
+        <result property="fileType"    column="file_type"    />
+    </resultMap>
+
+    <resultMap type="com.pengpeng.v4.pojo.comment.PpComment" id="PpCommentFilesResult">
+        <result property="id"    column="id"    />
+        <result property="dynamicId"    column="dynamic_id"    />
+        <result property="fromUid"    column="from_uid"    />
+        <result property="toUid"    column="to_uid"    />
+        <result property="comment"    column="comment"    />
+        <result property="headImage"    column="head_url"    />
+        <result property="fromName"    column="fromName"    />
+        <result property="toName"    column="toName"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="type"    column="type"    />
+        <result property="treeCode"    column="tree_code"    />
+        <result property="tree"    column="tree"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="headImage"    column="head_url"    />
+        <result property="fileUrl"    column="file_url"    />
+        <result property="fileType"    column="file_type"    />
+        <result property="dynamicContent" column="dynamic_content"/>
+        <result property="fileUrl" column="file_url"/>
+        <result property="nickname" column="nickname"/>
+        <result property="headUrl" column="head_url"/>
+
+    </resultMap>
+
+    <sql id="selectPpCommentVo">
+        select id, dynamic_id, from_uid, to_uid, comment, parent_id, type, tree_code, tree, create_time, update_time from pp_comment
+    </sql>
+
+    <select id="selectPpCommentList" parameterType="com.pengpeng.v4.pojo.comment.PpComment" resultMap="PpCommentResult">
+
+        SELECT
+        comt.id,
+        comt.dynamic_id,
+        comt.from_uid,
+        comt.COMMENT,
+        comt.create_time,
+        m.head_url
+        FROM
+        pp_comment comt
+        LEFT JOIN pp_member m on m.id = comt.from_uid
+        LEFT JOIN pp_dynamic dynamic on dynamic.id = comt.dynamic_id
+        WHERE
+        comt.to_uid = #{toUid} and
+        comt.isLooked = #{looked}
+    </select>
+    
+    <select id="selectPpCommentById" parameterType="Long" resultMap="PpCommentResult">
+        <include refid="selectPpCommentVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectSourcePpCommentById" resultMap="PpCommentResult">
+        select id, dynamic_id, from_uid, to_uid, comment, parent_id, type, tree, tree_code, create_time,
+         update_time
+         FROM pp_comment
+         WHERE id = #{id};
+    </select>
+
+    <select id="selectPpCommentPllist" resultMap="PpCommentResult">
+        SELECT
+        ment.*,
+        memb.head_url,
+        memb.nickname fromName,
+        memb2.nickname toName
+        FROM
+        pp_comment ment
+        LEFT JOIN pp_member memb ON ment.from_uid = memb.id
+        LEFT JOIN pp_member memb2 ON ment.to_uid = memb2.id
+        <where>
+            <if test="dynamicId!=null">ment.dynamic_id = #{dynamicId}</if>
+            <if test="type!=null">and ment.type = #{type}</if>
+        </where>
+    </select>
+    <select id="selectPpCommentPlCount" parameterType="com.pengpeng.v4.pojo.comment.PpComment" resultType="java.lang.Integer">
+               SELECT
+            count(1)
+        FROM
+            pp_comment comm
+            LEFT JOIN pp_member memb on comm.from_uid = memb.id
+            LEFT JOIN pp_member memb2 on comm.to_uid = memb2.id
+        WHERE
+            comm.tree LIKE CONCAT( #{treeCode},':', '%' )
+        ORDER BY
+            comm.create_time DESC
+    </select>
+    <select id="selectPpCommentMaxTreeCodeById" resultType="java.lang.Integer">
+        SELECT IFNULL(MAX(tree_code),0) tree_code FROM pp_comment WHERE dynamic_id = #{dynamicId}
+    </select>
+
+    <select id="selectPpCommentUnDerList" resultType="java.util.Map">
+        SELECT
+            commt.id,
+            commt.from_uid,
+            commt.to_uid,
+            commt.`comment`,
+            memb.nickname fromName,
+            memb.head_url,
+            memb2.nickname toName
+        FROM
+            pp_comment commt
+            LEFT JOIN pp_member memb on memb.id = commt.from_uid
+            LEFT JOIN pp_member memb2 on memb2.id = commt.to_uid
+        WHERE
+            commt.dynamic_id = #{dynamicId}
+            AND commt.tree LIKE CONCAT(#{treeCode},":","%")
+    </select>
+    <select id="selectAllPpCommentList" resultMap="PpCommentResult">
+        select * from pp_comment
+        <where>
+            status = 1
+            <if test="comment != null  and comment != ''"> and comment like concat("%",#{comment},"%")</if>
+            <if test="type != null "> and type = #{type}</if>
+        </where>
+    </select>
+
+    <insert id="insertPpComment" parameterType="com.pengpeng.v4.pojo.comment.PpComment" useGeneratedKeys="true" keyProperty="id">
+        insert into pp_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dynamicId != null ">dynamic_id,</if>
+            <if test="fromUid != null ">from_uid,</if>
+            <if test="toUid != null ">to_uid,</if>
+            <if test="comment != null  and comment != ''">comment,</if>
+            <if test="parentId != null ">parent_id,</if>
+            <if test="type != null ">type,</if>
+            <if test="treeCode != null ">tree_code,</if>
+            <if test="tree != null  and tree != ''">tree,</if>
+            <if test="looked != null ">isLooked,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dynamicId != null ">#{dynamicId},</if>
+            <if test="fromUid != null ">#{fromUid},</if>
+            <if test="toUid != null ">#{toUid},</if>
+            <if test="comment != null  and comment != ''">#{comment},</if>
+            <if test="parentId != null ">#{parentId},</if>
+            <if test="type != null ">#{type},</if>
+            <if test="treeCode != null ">#{treeCode},</if>
+            <if test="tree != null  and tree != ''">#{tree},</if>
+            <if test="looked != null ">#{looked},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePpComment" parameterType="com.pengpeng.v4.pojo.comment.PpComment">
+        update pp_comment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dynamicId != null ">dynamic_id = #{dynamicId},</if>
+            <if test="fromUid != null ">from_uid = #{fromUid},</if>
+            <if test="toUid != null ">to_uid = #{toUid},</if>
+            <if test="comment != null  and comment != ''">comment = #{comment},</if>
+            <if test="parentId != null ">parent_id = #{parentId},</if>
+            <if test="type != null ">type = #{type},</if>
+            <if test="treeCode != null ">tree_code = #{treeCode},</if>
+            <if test="tree != null  and tree != ''">tree = #{tree},</if>
+            <if test="isLooked != null  and isLooked != ''">isLooked = #{isLooked},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <update id="updatePpCommentByIds">
+        update pp_comment set isLooked = 1 where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <delete id="deletePpCommentById" parameterType="Long">
+        delete from pp_comment where id = #{id}
+    </delete>
+
+    <delete id="deletePpCommentByIds" parameterType="String">
+        delete from pp_comment where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="otherComment" resultMap="PpCommentFilesResult">
+
+            SELECT
+        `comment`.`comment`,
+        `comment`.id,
+        dynamic.id dynamic_id,
+        `comment`.create_time,
+        `comment`.update_time,
+        dynamic.dynamic_content,
+        memb.nickname,
+	memb.head_url
+    FROM
+        pp_comment `comment`
+        LEFT JOIN pp_dynamic dynamic ON `comment`.dynamic_id = dynamic.id
+        LEFT JOIN pp_member memb ON `comment`.from_uid = memb.id
+    WHERE
+        `comment`.isLooked = 0
+        AND dynamic.STATUS = 1
+        AND `comment`.to_uid = #{userId}
+    </select>
+    
+</mapper>

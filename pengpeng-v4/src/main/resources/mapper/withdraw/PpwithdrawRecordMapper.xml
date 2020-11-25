@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.withdraw.PpwithdrawRecordMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.withdraw.PpwithdrawRecord" id="PpwithdrawRecordResult">
+        <result property="withdrawId"    column="withdraw_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="withdrawWay"    column="withdraw_way"    />
+        <result property="withdrawGold"    column="withdraw_gold"    />
+        <result property="withdrawAccount"    column="withdraw_account"    />
+        <result property="withdrawTime"    column="withdraw_time"    />
+        <result property="withdrawCause" column="withdraw_cause"/>
+        <result property="withdrawStatus" column="withdraw_status"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap type="com.pengpeng.v4.pojo.withdraw.PpwithdrawRecord" id="AppwithdrawRecordResult">
+        <result property="withdrawId"    column="withdraw_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="withdrawWay"    column="withdraw_way"    />
+        <result property="withdrawGold"    column="withdraw_gold"    />
+        <result property="withdrawAccount"    column="withdraw_account"    />
+        <result property="withdrawTime"    column="withdraw_time"    />
+        <result property="withdrawStatus" column="withdraw_status"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="withdrawCause" column="withdraw_cause"/>
+    </resultMap>
+
+    <sql id="selectPpwithdrawRecordVo">
+        select withdraw_id, user_id, withdraw_way, withdraw_gold, withdraw_account,withdraw_status, withdraw_time,update_time,withdraw_cause from pp_withdraw_record
+    </sql>
+
+    <select id="selectPpwithdrawRecordList" parameterType="com.pengpeng.v4.pojo.withdraw.PpwithdrawRecord" resultMap="PpwithdrawRecordResult">
+        <include refid="selectPpwithdrawRecordVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="withdrawWay != null  and withdrawWay != ''"> and withdraw_way = #{withdrawWay}</if>
+            <if test="withdrawGold != null  and withdrawGold != ''"> and withdraw_gold = #{withdrawGold}</if>
+            <if test="withdrawAccount != null  and withdrawAccount != ''"> and withdraw_account = #{withdrawAccount}</if>
+            <if test="withdrawTime != null and withdrawTime != ''"> and withdraw_time = #{withdrawTime}</if>
+            <if test="withdrawStatus != null"> and withdraw_status = #{withdrawStatus}</if>
+            <if test="withdrawCause != null and withdrawCause != ''"> and withdraw_cause = #{withdrawCause}</if>
+        </where>
+    </select>
+    
+    <select id="selectPpwithdrawRecordById" parameterType="Long" resultMap="PpwithdrawRecordResult">
+        <include refid="selectPpwithdrawRecordVo"/>
+        where withdraw_id = #{withdrawId}
+    </select>
+        
+    <insert id="insertPpwithdrawRecord" parameterType="com.pengpeng.v4.pojo.withdraw.PpwithdrawRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into pp_withdraw_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">user_id,</if>
+            <if test="withdrawWay != null ">withdraw_way,</if>
+            <if test="withdrawGold != null  and withdrawGold != ''">withdraw_gold,</if>
+            <if test="withdrawAccount != null  and withdrawAccount != ''">withdraw_account,</if>
+            <if test="withdrawTime != null ">withdraw_time,</if>
+            <if test="withdrawCause != null ">withdraw_status,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">#{userId},</if>
+            <if test="withdrawWay != null">#{withdrawWay},</if>
+            <if test="withdrawGold != null  and withdrawGold != ''">#{withdrawGold},</if>
+            <if test="withdrawAccount != null  and withdrawAccount != ''">#{withdrawAccount},</if>
+            <if test="withdrawTime != null ">#{withdrawTime},</if>
+            <if test="withdrawCause != null ">#{withdrawCause},</if>
+            <if test="withdrawStatus != null ">#{withdrawStatus},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePpwithdrawRecord" parameterType="com.pengpeng.v4.pojo.withdraw.PpwithdrawRecord">
+        update pp_withdraw_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="withdrawWay != null">withdraw_way = #{withdrawWay},</if>
+            <if test="withdrawGold != null  and withdrawGold != ''">withdraw_gold = #{withdrawGold},</if>
+            <if test="withdrawAccount != null  and withdrawAccount != ''">withdraw_account = #{withdrawAccount},</if>
+            <if test="withdrawTime != null ">withdraw_time = #{withdrawTime},</if>
+            <if test="withdrawCause != null ">withdraw_cause = #{withdrawCause},</if>
+            <if test="withdrawStatus != null ">withdraw_status = #{withdrawStatus},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where withdraw_id = #{withdrawId}
+    </update>
+
+    <delete id="deletePpwithdrawRecordById" parameterType="Long">
+        delete from pp_withdraw_record where withdraw_id = #{withdrawId}
+    </delete>
+
+    <delete id="deletePpwithdrawRecordByIds" parameterType="String">
+        delete from pp_withdraw_record where withdraw_id in 
+        <foreach item="withdrawId" collection="array" open="(" separator="," close=")">
+            #{withdrawId}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.invite.PpInviteMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.invite.PpInvite" id="PpInviteResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="byUserId"    column="by_user_id"    />
+    </resultMap>
+
+    <resultMap type="com.pengpeng.v4.pojo.invite.PpInvite" id="BackgroundResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="byUserId"    column="by_user_id"    />
+    </resultMap>
+
+    <sql id="selectPpInviteVo">
+        select id, user_id, by_user_id from pp_invite
+    </sql>
+
+    <select id="selectPpInviteList" parameterType="com.pengpeng.v4.pojo.invite.PpInvite" resultMap="PpInviteResult">
+        <include refid="selectPpInviteVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="byUserId != null "> and by_user_id = #{byUserId}</if>
+        </where>
+    </select>
+    
+    <select id="selectPpInviteById" parameterType="Long" resultMap="PpInviteResult">
+        <include refid="selectPpInviteVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPpInvite" parameterType="com.pengpeng.v4.pojo.invite.PpInvite">
+        insert into pp_invite
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="userId != null ">user_id,</if>
+            <if test="byUserId != null ">by_user_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="userId != null ">#{userId},</if>
+            <if test="byUserId != null ">#{byUserId},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePpInvite" parameterType="com.pengpeng.v4.pojo.invite.PpInvite">
+        update pp_invite
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="byUserId != null ">by_user_id = #{byUserId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePpInviteById" parameterType="Long">
+        delete from pp_invite where id = #{id}
+    </delete>
+
+    <delete id="deletePpInviteByIds" parameterType="String">
+        delete from pp_invite where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="insertId">
+        insert into pp_invite
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">user_id,</if>
+            <if test="byUserId != null ">by_user_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">#{userId},</if>
+            <if test="byUserId != null ">#{byUserId},</if>
+        </trim>
+    </insert>
+    
+</mapper>

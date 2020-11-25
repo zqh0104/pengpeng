@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('已交付任务列表')"/>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="notice-form">
+                <div class="select-list">
+                    <input type="hidden" name="status" value="2">
+                    <ul>
+                        <li>
+                            任务标题：<input type="text" name="title"/>
+                        </li>
+                        <li>
+                            用户姓名：<input type="text" name="userName"/>
+                        </li>
+
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-xs" onclick="$.table.search()"><i
+                                    class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-xs" onclick="$.form.reset()"><i
+                                    class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    var producttakeFlag = [[${@permission.hasPermi('system:task:producttake')}]];
+    var prefix = ctx + "system/task";
+    var datas = [[${@dict.getType('sys_cct_task_status')}]];
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            modalName: "成品收取",
+            columns: [{
+                checkbox: true
+            },
+
+                {
+                    field: 'title',
+                    title: '任务标题'
+                },
+                {
+                    field: 'userName',
+                    title: '用户姓名'
+                },
+
+                {
+                    field: 'status',
+                    title: '任务状态',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(datas, value);
+                    }
+                },
+                {
+                    visible: producttakeFlag == 'hidden' ? false : true,
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        //return statusTools(row);
+                        return '<span style="cursor: pointer" class=\"btn btn-success btn-sm\" onclick="enable(\'' + row.id + '\')">通过</span> ' +
+                            '<span style="cursor: pointer" class=\"btn btn-danger btn-sm\" onclick="disable(\'' + row.id + '\')">不通过</span>';
+                    }
+
+                }]
+        };
+        $.table.init(options);
+    });
+
+    /* 状态显示 */
+    function statusTools(row) {
+        if (row.status == 2) {
+            return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="enable(\'' + row.id + '\')"></i> ';
+        }
+    }
+
+    /* 通过 */
+    function enable(id) {
+        $.modal.confirm("确认验收无误吗？", function () {
+            $.operate.post(prefix + "/changeStatus", {"id": id, "status": 3});
+        })
+    }
+
+    /* 不通过 */
+    function disable(id) {
+        $.modal.confirm("确认验收不通过吗？", function () {
+            /*暂定：验收不通过则返回重做*/
+            $.operate.post(prefix + "/changeStatus", {"id": id,"status":1});
+        })
+    }
+
+</script>
+</body>
+</html>

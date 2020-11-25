@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.sysset.SysSetMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.sysset.SysSet" id="SysSetResult">
+        <result property="id"    column="id"/>
+        <result property="eachDayNum"    column="each_day_num"    />
+        <result property="registerFreeNum"    column="register_free_num"    />
+        <result property="vipFreeNum"    column="vip_free_num"    />
+        <result property="inviteFreeNum"    column="invite_free_num"    />
+        <result property="bindingFreeNum"    column="binding_free_num"    />
+        <result property="withdrawLowest"    column="withdraw_lowest"    />
+        <result property="withdrawStar" column="withdraw_star"/>
+        <result property="withdrawOver" column="withdraw_over"/>
+        <result property="discountRate" column="discount_rate"/>
+        <result property="shareNum" column="share_num"/>
+        <result property="treasure" column="treasure"/>
+        <result property="timAdmin" column="tim_admin"/>
+        <result property="timSig" column="tim_sig"/>
+        <result property="vipDayNum" column="vip_day_num"/>
+    </resultMap>
+
+    <sql id="selectSysSetVo">
+        select id, each_day_num,vip_day_num, register_free_num, vip_free_num,share_num, invite_free_num, binding_free_num, withdraw_lowest, withdraw_star, withdraw_over, discount_rate, treasure,tim_admin,tim_sig, create_time, update_time, ext1, ext2 from sys_set
+    </sql>
+    <sql id="selectPpUserWhistleBlowingVo">
+        select id,register_free_num,each_day_num,vip_day_num,vip_free_num,share_num,invite_free_num,binding_free_num,withdraw_lowest,withdraw_star,withdraw_over,discount_rate,treasure,tim_admin,tim_sig from sys_set
+    </sql>
+
+    <select id="selectId"  resultMap="SysSetResult">
+        select id,register_free_num, vip_day_num,vip_free_num,invite_free_num,share_num,binding_free_num,withdraw_lowest,withdraw_star,withdraw_over,tim_admin,tim_sig from sys_set
+        where id = #{id}
+    </select>
+
+    <select id="selectSet" resultMap="SysSetResult">
+        <include refid="selectPpUserWhistleBlowingVo"/>
+
+    </select>
+
+    <update id="updateSysSet" parameterType="com.pengpeng.v4.pojo.sysset.SysSet">
+        update sys_set
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="eachDayNum != null ">each_day_num = #{eachDayNum},</if>
+            <if test="registerFreeNum != null ">register_free_num = #{registerFreeNum},</if>
+            <if test="vipFreeNum != null ">vip_free_num = #{vipFreeNum},</if>
+            <if test="inviteFreeNum != null ">invite_free_num = #{inviteFreeNum},</if>
+            <if test="shareNum != null ">share_num = #{shareNum},</if>
+            <if test="bindingFreeNum != null ">binding_free_num = #{bindingFreeNum},</if>
+            <if test="withdrawLowest != null ">withdraw_lowest = #{withdrawLowest},</if>
+            <if test="withdrawStar != null ">withdraw_star = #{withdrawStar},</if>
+            <if test="withdrawOver != null ">withdraw_over = #{withdrawOver},</if>
+            <if test="discountRate != null  and discountRate != ''">discount_rate = #{discountRate},</if>
+            <if test="treasure != null  and treasure != ''">treasure = #{treasure},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="ext1 != null  and ext1 != ''">ext1 = #{ext1},</if>
+            <if test="ext2 != null  and ext2 != ''">ext2 = #{ext2},</if>
+            <if test="timAdmin != null  and timAdmin != ''">tim_admin = #{timAdmin},</if>
+            <if test="timSig != null  and timSig != ''">tim_sig = #{timSig},</if>
+            <if test="vipDayNum != null  and vipDayNum != ''">vip_day_num = #{vipDayNum},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <select id="selectSysSetList" parameterType="com.pengpeng.v4.pojo.sysset.SysSet" resultMap="SysSetResult">
+        <include refid="selectSysSetVo"/>
+        <where>
+            <if test="eachDayNum != null "> and each_day_num = #{eachDayNum}</if>
+            <if test="registerFreeNum != null "> and register_free_num = #{registerFreeNum}</if>
+            <if test="vipFreeNum != null "> and vip_free_num = #{vipFreeNum}</if>
+            <if test="inviteFreeNum != null "> and invite_free_num = #{inviteFreeNum}</if>
+            <if test="bindingFreeNum != null "> and binding_free_num = #{bindingFreeNum}</if>
+            <if test="withdrawLowest != null "> and withdraw_lowest = #{withdrawLowest}</if>
+            <if test="withdrawStar != null "> and withdraw_star = #{withdrawStar}</if>
+            <if test="withdrawOver != null "> and withdraw_over = #{withdrawOver}</if>
+            <if test="discountRate != null  and discountRate != ''"> and discount_rate = #{discountRate}</if>
+            <if test="treasure != null  and treasure != ''"> and treasure = #{treasure}</if>
+            <if test="ext1 != null  and ext1 != ''"> and ext1 = #{ext1}</if>
+            <if test="ext2 != null  and ext2 != ''"> and ext2 = #{ext2}</if>
+            <if test="timAdmin != null  and timAdmin != ''"> and tim_admin = #{timAdmin},</if>
+            <if test="timSig != null  and timSig != ''"> and tim_sig = #{timSig},</if>
+            <if test="vipDayNum != null  and vipDayNum != ''">and vip_day_num = #{vipDayNum},</if>
+        </where>
+    </select>
+
+    <select id="selectSysSetById" parameterType="Long" resultMap="SysSetResult">
+        <include refid="selectSysSetVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSysSet" parameterType="com.pengpeng.v4.pojo.sysset.SysSet" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_set
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="eachDayNum != null ">each_day_num,</if>
+            <if test="registerFreeNum != null ">register_free_num,</if>
+            <if test="vipFreeNum != null ">vip_free_num,</if>
+            <if test="inviteFreeNum != null ">invite_free_num,</if>
+            <if test="bindingFreeNum != null ">binding_free_num,</if>
+            <if test="withdrawLowest != null ">withdraw_lowest,</if>
+            <if test="withdrawStar != null ">withdraw_star,</if>
+            <if test="withdrawOver != null ">withdraw_over,</if>
+            <if test="discountRate != null  and discountRate != ''">discount_rate,</if>
+            <if test="treasure != null  and treasure != ''">treasure,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="ext1 != null  and ext1 != ''">ext1,</if>
+            <if test="ext2 != null  and ext2 != ''">ext2,</if>
+            <if test="timAdmin != null  and timAdmin != ''">tim_admin,</if>
+            <if test="timSig != null  and timSig != ''">tim_sig,</if>
+            <if test="vipDayNum != null  and vipDayNum != ''">vip_day_num,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="eachDayNum != null ">#{eachDayNum},</if>
+            <if test="registerFreeNum != null ">#{registerFreeNum},</if>
+            <if test="vipFreeNum != null ">#{vipFreeNum},</if>
+            <if test="inviteFreeNum != null ">#{inviteFreeNum},</if>
+            <if test="bindingFreeNum != null ">#{bindingFreeNum},</if>
+            <if test="withdrawLowest != null ">#{withdrawLowest},</if>
+            <if test="withdrawStar != null ">#{withdrawStar},</if>
+            <if test="withdrawOver != null ">#{withdrawOver},</if>
+            <if test="discountRate != null  and discountRate != ''">#{discountRate},</if>
+            <if test="treasure != null  and treasure != ''">#{treasure},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="ext1 != null  and ext1 != ''">#{ext1},</if>
+            <if test="ext2 != null  and ext2 != ''">#{ext2},</if>
+            <if test="timAdmin != null  and timAdmin != ''">#{timAdmin},</if>
+            <if test="timSig != null  and timSig != ''">#{timSig},</if>
+            <if test="vipDayNum != null  and vipDayNum != ''">#{vipDayNum},</if>
+        </trim>
+    </insert>
+
+
+    <delete id="deleteSysSetById" parameterType="Long">
+        delete from sys_set where id = #{id}
+    </delete>
+
+    <delete id="deleteSysSetByIds" parameterType="String">
+        delete from sys_set where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

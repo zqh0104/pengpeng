@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('已验收任务列表')"/>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="notice-form">
+                <div class="select-list">
+                    <input type="hidden" name="status" value="3">
+                    <ul>
+                        <li>
+                            任务标题：<input type="text" name="title"/>
+                        </li>
+                        <li>
+                            用户姓名：<input type="text" name="userName"/>
+                        </li>
+
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                    class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                    class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    var collectionFlag = [[${@permission.hasPermi('system:task:collection')}]];
+    var prefix = ctx + "system/task";
+    var datas = [[${@dict.getType('sys_cct_task_status')}]];
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            modalName: "成品收取",
+            columns: [{
+                checkbox: true
+            },
+
+                {
+                    field: 'title',
+                    title: '任务标题'
+                },
+                {
+                    field: 'userName',
+                    title: '用户姓名'
+                },
+
+                {
+                    field: 'status',
+                    title: '任务状态',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(datas, value);
+                    }
+                },
+                {
+                    visible: collectionFlag == 'hidden' ? false : true,
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        //return statusTools(row);
+                        return '<span style=\"cursor: pointer\" class=\"btn btn-info btn-xs\" onclick="enable(\'' + row.id + '\')">收取</span>';
+                    }
+
+                }]
+        };
+        $.table.init(options);
+    });
+
+    /* 状态显示 */
+    function statusTools(row) {
+        if (row.status == 3) {
+            return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="enable(\'' + row.id + '\')"></i> ';
+        }
+    }
+
+    /* 通过 */
+    function enable(id) {
+        $.modal.confirm("确认收取成品吗？", function () {
+            $.operate.post(prefix + "/changeStatus", {"id": id, "status": 4});
+        })
+    }
+
+</script>
+</body>
+</html>

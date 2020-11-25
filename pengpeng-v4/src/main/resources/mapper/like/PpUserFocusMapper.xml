@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.like.PpUserFocusMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.like.PpUserFocus" id="PpUserFocusResult">
+        <result property="id"    column="id"    />
+        <result property="useraId"    column="usera_id"    />
+        <result property="userbId"    column="userb_id"    />
+        <result property="status"    column="status"    />
+        <result property="creatime"    column="creatime"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <resultMap type="com.pengpeng.v4.pojo.like.PpUserFocus" id="UserFocusResult">
+        <result property="id"    column="id"    />
+        <result property="useraId"    column="usera_id"    />
+        <result property="userbId"    column="userb_id"    />
+        <result property="status"    column="status"    />
+        <result property="creatime"    column="creatime"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="myHeadUrl" column="my_head_url"/>
+        <result property="myNickname" column="my_nickname"/>
+        <result property="othersHeadUrl" column="others_head_url"/>
+        <result property="othersNickname" column="others_nickname"/>
+
+    </resultMap>
+
+    <sql id="selectPpUserFocusVo">
+        select id, usera_id, userb_id, status, creatime, update_time from pp_user_focus
+    </sql>
+
+    <select id="selectPpUserFocusList" parameterType="com.pengpeng.v4.pojo.like.PpUserFocus" resultMap="PpUserFocusResult">
+        <include refid="selectPpUserFocusVo"/>
+        <where>  
+            <if test="useraId != null "> and usera_id = #{useraId}</if>
+            <if test="userbId != null "> and userb_id = #{userbId}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="creatime != null "> and creatime = #{creatime}</if>
+        </where>
+    </select>
+    
+    <select id="selectPpUserFocusById" parameterType="Long" resultMap="PpUserFocusResult">
+        <include refid="selectPpUserFocusVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPpUserFocus" parameterType="com.pengpeng.v4.pojo.like.PpUserFocus" useGeneratedKeys="true" keyProperty="id">
+        insert into pp_user_focus
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="useraId != null ">usera_id,</if>
+            <if test="userbId != null ">userb_id,</if>
+            <if test="status != null ">status,</if>
+            <if test="creatime != null ">creatime,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="useraId != null ">#{useraId},</if>
+            <if test="userbId != null ">#{userbId},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="creatime != null ">#{creatime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePpUserFocus" parameterType="com.pengpeng.v4.pojo.like.PpUserFocus">
+        update pp_user_focus
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="useraId != null ">usera_id = #{useraId},</if>
+            <if test="userbId != null ">userb_id = #{userbId},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="creatime != null ">creatime = #{creatime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePpUserFocusById" parameterType="Long">
+        delete from pp_user_focus where id = #{id}
+    </delete>
+
+    <delete id="deletePpUserFocusByIds" parameterType="String">
+        delete from pp_user_focus where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectUseraId" resultMap="PpUserFocusResult">
+        select * from pp_user_focus where usera_id = #{useraId}
+    </select>
+
+    <select id="selectIds" parameterType="com.pengpeng.v4.pojo.like.PpUserFocus" resultMap="PpUserFocusResult">
+        <include refid="selectPpUserFocusVo"/>
+        where usera_id = #{useraId} and userb_id= #{userbId}
+    </select>
+    <select id="selectEachFocusList" resultMap="PpUserFocusResult">
+        SELECT * FROM pp_user_focus where (userb_id = #{userId} or usera_id =#{userId}) and status =3
+    </select>
+
+    <update id="eachOther" parameterType="com.pengpeng.v4.pojo.like.PpUserFocus">
+         update pp_user_focus set
+            status = 3,
+		    update_time=NOW()
+        where usera_id =#{useraId} and userb_id = #{userbId}
+		or userb_id=#{useraId} and usera_id= #{userbId}
+    </update>
+
+    <update id="updateStatus" parameterType="com.pengpeng.v4.pojo.like.PpUserFocus">
+        update pp_user_focus set
+            status = #{status},
+		    update_time=NOW()
+        where usera_id =#{useraId} and userb_id = #{userbId}
+    </update>
+
+    <insert id="insertLike">
+        insert into pp_user_focus(usera_id,userb_id,status,creatime,update_time) values
+        (#{useraId},#{userbId},#{stuts},NOW(),NOW())
+    </insert>
+
+    <select id="othersLike" resultMap="PpUserFocusResult">
+        select * from pp_user_focus where usera_id = #{userId} and status in (2,3) or userb_id = #{userId} and status = 1
+    </select>
+
+    <select id="statusAndUser" resultMap="UserFocusResult">
+        select t1.*,t2.head_url as my_head_url,t2.nickname as my_nickname,t3.head_url as others_head_url,t3.nickname as others_nickname
+        from pp_user_focus t1
+        join pp_member t2 on t1.usera_id = t2.id
+        join pp_member t3 on t1.userb_id = t3.id
+        where t1.usera_id = #{userId} and t1.userb_id = #{otherId}
+    </select>
+
+</mapper>

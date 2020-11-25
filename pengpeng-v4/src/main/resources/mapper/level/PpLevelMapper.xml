@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.level.PpLevelMapper">
+    <resultMap type="com.pengpeng.v4.pojo.level.PpLevel" id="PpLevelResult">
+        <result property="id"    column="id"    />
+        <result property="gradeName"    column="grade_name"    />
+        <result property="gradeTreasure"    column="grade_treasure"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectPpLevelVo">
+        select id, grade_name, grade_treasure, create_time, update_time from pp_level
+    </sql>
+
+    <select id="selectPpLevelList" parameterType="com.pengpeng.v4.pojo.level.PpLevel" resultMap="PpLevelResult">
+        <include refid="selectPpLevelVo"/>
+        <where>  
+            <if test="gradeName != null  and gradeName != ''"> and grade_name like concat('%', #{gradeName}, '%')</if>
+            <if test="gradeTreasure != null "> and grade_treasure = #{gradeTreasure}</if>
+        </where>
+    </select>
+    
+    <select id="selectPpLevelById" parameterType="Long" resultMap="PpLevelResult">
+        <include refid="selectPpLevelVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectCurrentLevel" resultType="String">
+        SELECT grade_name FROM pp_level WHERE grade_treasure &lt;=#{gradeTreasure} ORDER BY grade_treasure desc LIMIT 1
+    </select>
+
+    <insert id="insertPpLevel" parameterType="com.pengpeng.v4.pojo.level.PpLevel" useGeneratedKeys="true" keyProperty="id">
+        insert into pp_level
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="gradeName != null  and gradeName != ''">grade_name,</if>
+            <if test="gradeTreasure != null ">grade_treasure,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="gradeName != null  and gradeName != ''">#{gradeName},</if>
+            <if test="gradeTreasure != null ">#{gradeTreasure},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePpLevel" parameterType="com.pengpeng.v4.pojo.level.PpLevel">
+        update pp_level
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="gradeName != null  and gradeName != ''">grade_name = #{gradeName},</if>
+            <if test="gradeTreasure != null ">grade_treasure = #{gradeTreasure},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePpLevelById" parameterType="Long">
+        delete from pp_level where id = #{id}
+    </delete>
+
+    <delete id="deletePpLevelByIds" parameterType="String">
+        delete from pp_level where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

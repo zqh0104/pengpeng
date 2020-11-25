@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('取消任务申请列表')"/>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="notice-form">
+                <div class="select-list">
+                    <input type="hidden" name="applyType" value="2">
+                    <ul>
+                        <li>
+                            任务标题：<input type="text" name="title"/>
+                        </li>
+                        <li>
+                            用户姓名：<input type="text" name="userName"/>
+                        </li>
+                        <li>
+                            取消原因：<input type="text" name="cancelReason"/>
+                        </li>
+                        <li>
+                            审批状态：<select name="applyAudit" th:with="type=${@dict.getType('sys_approve_status')}">
+                            <option value="">所有</option>
+                            <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                        </select>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                    class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                    class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    var approveFlag = [[${@permission.hasPermi('system:task:cancel')}]];
+    var prefix = ctx + "system/task";
+    var datas = [[${@dict.getType('sys_approve_status')}]];
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            updateUrl: prefix + "/edit/{id}",
+            modalName: "信誉积分",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'title',
+                    title: '任务标题'
+                },
+                {
+                    field: 'userName',
+                    title: '用户姓名'
+                },
+                {
+                    field: 'cancelReason',
+                    title: '取消原因'
+                },
+
+                {
+                    field: 'applyAudit',
+                    title: '审批状态',
+                    formatter: function(value, row, index) {
+                        if(value == null){
+                            return "<span class='badge badge-warning'>未审批</span>";
+                        }
+                        return $.table.selectDictLabel(datas, value?1:0);
+                    },
+                    sortable:true,
+                    align:'center'
+                },
+                {
+                    visible: approveFlag == 'hidden' ? false : true,
+                    title: '审批',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        //return statusTools(row);
+                        const btg = ' <span style=\"cursor: pointer\" class=\"btn btn-danger btn-xs\" onclick="disable(\'' + row.id + '\')">不通过</span>';
+                        const tg = ' <span style=\"cursor: pointer\" class=\"btn btn-success btn-xs\" onclick="enable(\'' + row.id + '\')">通过</span>';
+                        const rbtg = ' <span style=\"cursor: pointer\" class=\"btn btn-danger btn-xs\" onclick="$.modal.alertWarning(\'不需要重复审批\')">不通过</span>';
+                        const rtg = ' <span style=\"cursor: pointer\" class=\"btn btn-success btn-xs\" onclick="$.modal.alertWarning(\'已通过不需要重复审批\')">通过</span>';
+                        if(row.applyAudit == 1){
+                            return btg + rtg;
+                        }else if(row.applyAudit == 0){
+                            return rbtg + tg;
+                        }else{
+                            return btg+tg;
+                        }
+                    }
+                }]
+        };
+        $.table.init(options);
+    });
+
+    /* 状态显示 */
+    function statusTools(row) {
+        if (!row.applyAudit) {
+            return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="enable(\'' + row.id + '\')"></i> ';
+        } else {
+            return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="disable(\'' + row.id + '\')"></i> ';
+        }
+    }
+
+    /* 通过 */
+    function enable(id) {
+        $.modal.confirm("确认批准取消任务申请吗？", function () {
+            $.operate.post(prefix + "/changeStatus", {"id": id, "applyAudit": 1});
+            /*修改信誉积分*/
+            //$.operate.edit(id);
+            var url = table.options.updateUrl.replace("{id}", id);
+            $.modal.open("修改" + table.options.modalName, url,500,300);
+        })
+    }
+
+    /* 不通过 */
+    function disable(id) {
+        $.modal.confirm("确认不通过取消任务申请吗？", function () {
+            $.operate.post(prefix + "/changeStatus", {"id": id, "applyAudit": 0});
+        })
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.feedback.PpFeedbackMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.feedback.PpFeedback" id="PpFeedbackResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="feedbackContent"    column="feedback_content"    />
+        <result property="feedbackTime"    column="feedback_time"    />
+    </resultMap>
+
+    <resultMap type="com.pengpeng.v4.pojo.feedback.PpFeedback" id="AppFeedbackResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="feedbackContent"    column="feedback_content"    />
+        <result property="feedbackTime"    column="feedback_time"    />
+        <result property="fileUrl" column="file_url"/>
+        <result property="nickname" column="nickname"/>
+        <association property="ppFiles" javaType="com.pengpeng.v4.pojo.files.PpFiles">
+            <result property="id"    column="id"    />
+            <result property="fileId"    column="file_id"    />
+            <result property="fileUrl"    column="file_url"    />
+            <result property="fileType"    column="file_type"    />
+            <result property="fileSource"    column="file_source"    />
+            <result property="createTime"    column="create_time"    />
+        </association>
+    </resultMap>
+
+    <sql id="selectPpFeedbackVo">
+        select id, user_id, feedback_content, feedback_time from pp_feedback
+    </sql>
+
+    <select id="selectPpFeedbackList" parameterType="com.pengpeng.v4.pojo.feedback.PpFeedback" resultMap="PpFeedbackResult">
+        <include refid="selectPpFeedbackVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="feedbackContent != null  and feedbackContent != ''"> and feedback_content = #{feedbackContent}</if>
+            <if test="feedbackTime != null "> and feedback_time = #{feedbackTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectPpFeedbackById" parameterType="Long" resultMap="PpFeedbackResult">
+        <include refid="selectPpFeedbackVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPpFeedback" parameterType="com.pengpeng.v4.pojo.feedback.PpFeedback" useGeneratedKeys="true" keyProperty="id">
+        insert into pp_feedback
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">user_id,</if>
+            <if test="feedbackContent != null  and feedbackContent != ''">feedback_content,</if>
+            <if test="feedbackTime != null ">feedback_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">#{userId},</if>
+            <if test="feedbackContent != null  and feedbackContent != ''">#{feedbackContent},</if>
+            <if test="feedbackTime != null ">#{feedbackTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePpFeedback" parameterType="com.pengpeng.v4.pojo.feedback.PpFeedback">
+        update pp_feedback
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="feedbackContent != null  and feedbackContent != ''">feedback_content = #{feedbackContent},</if>
+            <if test="feedbackTime != null ">feedback_time = #{feedbackTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePpFeedbackById" parameterType="Long">
+        delete from pp_feedback where id = #{id}
+    </delete>
+
+    <delete id="deletePpFeedbackByIds" parameterType="String">
+        delete from pp_feedback where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <!--后台管理页面的展示所有-->
+    <select id="backgroundList" resultMap="AppFeedbackResult">
+        select t1.*,t2.file_url,t3.nickname as nickname from pp_feedback t1
+        left join pp_files t2  on t1.id = t2.file_id and t2.file_source = 4
+        left join pp_member t3 on t1.user_id = t3.id
+        <where>
+            <if test="userId != null "> and t1.user_id = #{userId}</if>
+            <if test="feedbackContent != null  and feedbackContent != ''"> and t1.feedback_content = #{feedbackContent}</if>
+            <if test="feedbackTime != null "> and t1.feedback_time = #{feedbackTime}</if>
+        </where>
+    </select>
+    
+    <delete id="backgroundDeleteByIds" parameterType="String">
+          DELETE t1,t2 FROM pp_feedback t1 LEFT JOIN pp_files t2 ON t1.id = t2.file_id and t2.file_source = 4
+		  WHERE t1.id in
+          <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+          </foreach>
+    </delete>
+
+
+
+</mapper>

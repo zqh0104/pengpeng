@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.balace.PpBalaceRecordMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.balace.PpBalaceRecord" id="PpBalaceRecordResult">
+        <result property="balanceId"    column="balance_id"    />
+        <result property="otherId"    column="other_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="nickname"    column="nickname"    />
+        <result property="type"    column="type"    />
+        <result property="balaceAlterationGold"    column="balace_alteration_gold"    />
+        <result property="balaceAlterationTime"    column="balace_alteration_time"    />
+    </resultMap>
+
+    <resultMap type="com.pengpeng.v4.pojo.balace.PpBalaceRecord" id="PpBalaceRecordResult2">
+        <result property="balanceId"    column="balance_id"    />
+        <result property="otherId"    column="other_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="type"    column="type"    />
+        <result property="balaceAlterationGold"    column="balace_alteration_gold"    />
+        <result property="balaceAlterationTime"    column="balace_alteration_time"    />
+        <result property="byUserId" column="by_user_id"/>
+        <result property="giftName" column="gift_name"/>
+        <result property="giftType" column="gift_type"/>
+        <result property="giftNumber" column="gift_number"/>
+        <result property="rechargeMoney" column="recharge_money"/>
+        <result property="rechargeDiamond" column="recharge_diamond"/>
+        <result property="othersnickname" column="othersnickname"/>
+        <result property="id" column="id"/>
+    </resultMap>
+
+    <sql id="selectPpBalaceRecordVo">
+        select balance_id, other_id, user_id, type, balace_alteration_gold, balace_alteration_time from pp_balace_record
+    </sql>
+
+    <select id="selectPpBalaceRecordList" parameterType="com.pengpeng.v4.pojo.balace.PpBalaceRecord" resultMap="PpBalaceRecordResult">
+        SELECT
+        blance.balance_id,
+        blance.other_id,
+        blance.user_id,
+        blance.type,
+        blance.balace_alteration_gold,
+        blance.balace_alteration_time ,
+        memb.nickname
+        FROM
+        pp_balace_record blance
+        LEFT JOIN pp_member memb ON memb.id = blance.user_id
+<!--        <include refid="selectPpBalaceRecordVo"/>-->
+        <where>
+            <if test="otherId != null "> and  blance.other_id = #{otherId}</if>
+            <if test="userId != null "> and  blance.user_id = #{userId}</if>
+            <if test="type != null "> and  blance.type = #{type}</if>
+            <if test="balaceAlterationGold != null  and balaceAlterationGold != ''"> and  blance.balace_alteration_gold = #{balaceAlterationGold}</if>
+            <if test="balaceAlterationTime != null "> and  blance.balace_alteration_time = #{balaceAlterationTime}</if>
+            <if test="params.beginBalaceAlterationTime != null and params.beginBalaceAlterationTime != ''"> and  blance.balace_alteration_time &gt;= #{params.beginBalaceAlterationTime}</if>
+            <if test="params.endBalaceAlterationTime != null and params.endBalaceAlterationTime != ''"> and  blance.balace_alteration_time &lt;= #{params.endBalaceAlterationTime}</if>
+        </where>
+    </select>
+
+    <select id="selectPpBalaceRecordById" parameterType="Long" resultMap="PpBalaceRecordResult">
+        <include refid="selectPpBalaceRecordVo"/>
+        where balance_id = #{balanceId}
+    </select>
+
+    <insert id="insertPpBalaceRecord" parameterType="com.pengpeng.v4.pojo.balace.PpBalaceRecord" useGeneratedKeys="true" keyProperty="balanceId">
+        insert into pp_balace_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="otherId != null ">other_id,</if>
+            <if test="userId != null ">user_id,</if>
+            <if test="type != null ">type,</if>
+            <if test="balaceAlterationGold != null  and balaceAlterationGold != ''">balace_alteration_gold,</if>
+            <if test="balaceAlterationTime != null ">balace_alteration_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="otherId != null ">#{otherId},</if>
+            <if test="userId != null ">#{userId},</if>
+            <if test="type != null ">#{type},</if>
+            <if test="balaceAlterationGold != null  and balaceAlterationGold != ''">#{balaceAlterationGold},</if>
+            <if test="balaceAlterationTime != null ">#{balaceAlterationTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updatePpBalaceRecord" parameterType="com.pengpeng.v4.pojo.balace.PpBalaceRecord">
+        update pp_balace_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="otherId != null ">other_id = #{otherId},</if>
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="type != null ">type = #{type},</if>
+            <if test="balaceAlterationGold != null  and balaceAlterationGold != ''">balace_alteration_gold = #{balaceAlterationGold},</if>
+            <if test="balaceAlterationTime != null ">balace_alteration_time = #{balaceAlterationTime},</if>
+        </trim>
+        where balance_id = #{balanceId}
+    </update>
+
+    <delete id="deletePpBalaceRecordById" parameterType="Long">
+        delete from pp_balace_record where balance_id = #{balanceId}
+    </delete>
+
+    <delete id="deletePpBalaceRecordByIds" parameterType="String">
+        delete from pp_balace_record where balance_id in
+        <foreach item="balanceId" collection="array" open="(" separator="," close=")">
+            #{balanceId}
+        </foreach>
+    </delete>
+
+    <select id="selectUser" resultMap="PpBalaceRecordResult2">
+          SELECT
+              record.*,
+              gift.gift_name,
+              grecord.by_user_id AS by_user_id,
+              grecord.gift_type AS gift_type,
+              grecord.gift_number AS gift_number,
+              rrecord.recharge_money AS recharge_money,
+              rrecord.recharge_diamond AS recharge_diamond ,
+              IFNULL(grecord.by_user_id,rrecord.user_id)  id,
+              memb.nickname as othersnickname
+          FROM
+              pp_balace_record record
+          LEFT JOIN pp_gift_record grecord ON record.other_id = grecord.id
+          AND record.type = 2
+          LEFT JOIN pp_gift gift on grecord.gift_id = gift.id AND record.type = 2
+          LEFT JOIN pp_recharge_record rrecord ON record.other_id = rrecord.id
+          AND record.type = 1
+          LEFT JOIN pp_member memb on  memb.id = IFNULL(grecord.by_user_id,rrecord.user_id)
+          WHERE
+               record.user_id = #{userId}
+          ORDER BY record.balace_alteration_time desc
+    </select>
+    
+</mapper>

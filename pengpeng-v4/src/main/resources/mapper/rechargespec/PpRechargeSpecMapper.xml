@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.rechargespec.PpRechargeSpecMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.rechargespec.PpRechargeSpec" id="PpRechargeSpecResult">
+        <result property="id"    column="id"    />
+        <result property="specMoney"    column="spec_money"    />
+        <result property="specVal"    column="spec_val"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectPpRechargeSpecVo">
+        select id, spec_money, spec_val, status, create_time, update_time from pp_recharge_spec
+    </sql>
+
+    <select id="selectPpRechargeSpecList" parameterType="com.pengpeng.v4.pojo.rechargespec.PpRechargeSpec" resultMap="PpRechargeSpecResult">
+        <include refid="selectPpRechargeSpecVo"/>
+        <where>  
+            <if test="specMoney != null  and specMoney != ''"> and spec_money like concat('%', #{specMoney}, '%')</if>
+            <if test="specVal != null "> and spec_val = #{specVal}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectPpRechargeSpecById" parameterType="Long" resultMap="PpRechargeSpecResult">
+        <include refid="selectPpRechargeSpecVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPpRechargeSpec" parameterType="com.pengpeng.v4.pojo.rechargespec.PpRechargeSpec">
+        insert into pp_recharge_spec
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="specMoney != null  and specMoney != ''">spec_money,</if>
+            <if test="specVal != null ">spec_val,</if>
+            <if test="status != null ">status,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="specMoney != null  and specMoney != ''">#{specMoney},</if>
+            <if test="specVal != null ">#{specVal},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePpRechargeSpec" parameterType="com.pengpeng.v4.pojo.rechargespec.PpRechargeSpec">
+        update pp_recharge_spec
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="specMoney != null  and specMoney != ''">spec_money = #{specMoney},</if>
+            <if test="specVal != null ">spec_val = #{specVal},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePpRechargeSpecById" parameterType="Long">
+        delete from pp_recharge_spec where id = #{id}
+    </delete>
+
+    <delete id="deletePpRechargeSpecByIds" parameterType="String">
+        delete from pp_recharge_spec where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

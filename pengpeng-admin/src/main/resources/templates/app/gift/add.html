@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('新增礼物')"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-gift-add" enctype="multipart/form-data">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">礼物名称：</label>
+            <div class="col-sm-8">
+                <input name="giftName" class="form-control" type="text" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">需要钻石数量：</label>
+            <div class="col-sm-8">
+                <input name="diamond" class="form-control" type="text" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">礼物金额：</label>
+            <div class="col-sm-8">
+                <input name="money" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">状态：</label>
+            <div class="col-sm-8">
+                <div class="radio-box">
+                    <select name="status">
+                        <option th:value="0">取消</option>
+                        <option th:value="1">启用</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">礼物图片：</label>
+            <div class="col-sm-8">
+                <input type="hidden" name="giftUrl"/>
+                <input id="giftUrl" name="giftUrl" type="file" onchange="gift()">
+                <div id="editor" class="summernote"></div>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer"/>
+<script type="text/javascript">
+    var prefix = ctx + "app/gift"
+    $("#form-gift-add").validate({
+        focusCleanup: true
+    });
+
+    //监听input变动,变动会触发gift方法
+    function gift() {
+        var formData = new FormData();
+        // console.log(document.getElementById("#giftUrl"))
+        var file = document.querySelector("#giftUrl").files[0];
+        console.log(file)
+        formData.append("files",file);
+        $.ajax({
+            url: "http://192.168.0.141:80/qiniu/uploadFiles",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            async: false,
+            success: function (result) {
+                console.log(result)
+                var giftUrl=result.data[0]
+                $("input[name=giftUrl]").val(giftUrl)
+            }
+        })
+
+    }
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/add", $('#form-gift-add').serialize());
+        }
+    }
+</script>
+</body>
+</html>

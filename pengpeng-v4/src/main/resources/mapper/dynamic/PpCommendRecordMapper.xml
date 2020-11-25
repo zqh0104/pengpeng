@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.dynamic.PpCommendRecordMapper">
+
+    <resultMap type="com.pengpeng.v4.pojo.dynamic.PpCommendRecord" id="PpCommendRecordResult">
+        <result property="id"    column="id"    />
+        <result property="dynamicId"    column="dynamic_id"    />
+        <result property="dynamicContent"    column="dynamic_content"    />
+        <result property="nickname"    column="nickname"    />
+        <result property="userId"    column="user_id"    />
+        <result property="toUid"    column="to_uId"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="headImage"    column="head_url"    />
+        <result property="fileUrl"    column="file_url"    />
+        <result property="fileType"    column="file_type"    />
+    </resultMap>
+
+    <sql id="selectPpCommendRecordVo">
+        select id, dynamic_id, user_id, status, create_time, update_time from pp_commend_record
+    </sql>
+
+    <select id="selectPpCommendRecordList" parameterType="com.pengpeng.v4.pojo.dynamic.PpCommendRecord" resultMap="PpCommendRecordResult">
+
+        SELECT
+        record.id,
+        record.dynamic_id,
+        record.user_id,
+        record.create_time,
+        dynamic.dynamic_content,
+        m.nickname,
+        m.head_url
+        FROM
+        pp_commend_record record
+        LEFT JOIN pp_member m on m.id = record.user_id
+        LEFT JOIN pp_dynamic dynamic on dynamic.id = record.dynamic_id
+        <where>
+            <if test="dynamicId != null "> and record.dynamic_id = #{dynamicId}</if>
+            <if test="userId != null "> and record.user_id = #{userId}</if>
+            <if test="toUid != null "> and record.to_uId = #{toUid}</if>
+            <if test="isRead != null "> and record.isread = #{isRead}</if>
+            <if test="status != null "> and record.status = #{status}</if>
+        </where>
+
+    </select>
+
+    <select id="selectPpCommendRecordById" parameterType="Long" resultMap="PpCommendRecordResult">
+        <include refid="selectPpCommendRecordVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectPpCommendRecordByDynamicIdAUserId"
+            resultType="com.pengpeng.v4.pojo.dynamic.PpCommendRecord">
+        <include refid="selectPpCommendRecordVo"/>
+        where user_id = #{uid} and dynamic_id = #{dyId}
+    </select>
+    <select id="selectAllPpCommendRecordList" resultMap="PpCommendRecordResult">
+        SELECT
+        record.* ,
+        memb.head_url
+        FROM
+        pp_commend_record record
+        LEFT JOIN pp_member memb on record.user_id = memb.id
+        <where>
+            <if test="dynamicId !=null">  record.dynamic_id = #{dynamicId}</if>
+            <if test="status !=null"> and  record.status = #{status}</if>
+        </where>
+    </select>
+
+    <insert id="insertPpCommendRecord" parameterType="com.pengpeng.v4.pojo.dynamic.PpCommendRecord">
+        insert into pp_commend_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="dynamicId != null ">dynamic_id,</if>
+            <if test="userId != null ">user_id,</if>
+            <if test="toUid != null ">to_uId,</if>
+            <if test="status != null ">status,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="dynamicId != null ">#{dynamicId},</if>
+            <if test="userId != null ">#{userId},</if>
+            <if test="toUid != null ">#{toUid},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePpCommendRecord" parameterType="com.pengpeng.v4.pojo.dynamic.PpCommendRecord">
+        update pp_commend_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dynamicId != null ">dynamic_id = #{dynamicId},</if>
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <update id="updatePpCommendRecordByIds">
+        update pp_commend_record set isread = 1 where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <delete id="deletePpCommendRecordById" parameterType="Long">
+        delete from pp_commend_record where id = #{id}
+    </delete>
+
+    <delete id="deletePpCommendRecordByIds" parameterType="String">
+        delete from pp_commend_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

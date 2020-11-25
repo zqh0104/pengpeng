@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.slide.PpSlideRecordMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.slide.PpSlideRecord" id="PpSlideRecordResult">
+        <result property="id"    column="id"    />
+        <result property="fromUid"    column="from_uid"    />
+        <result property="toUid"    column="to_uid"    />
+        <result property="fromUname"    column="fromUname"    />
+        <result property="toUname"    column="toUname"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <insert id="ppSlideRecordAdd" >
+
+        insert pp_slide_record (from_uid,to_uid,islike,create_time) values (#{fromUid},#{toUid},#{isLike},sysdate())
+    </insert>
+
+    <sql id="selectPpSlideRecordVo">
+        select id, from_uid, to_uid, create_time from pp_slide_record
+    </sql>
+
+    <select id="selectPpSlideRecordList" parameterType="com.pengpeng.v4.pojo.slide.PpSlideRecord" resultMap="PpSlideRecordResult">
+<!--        <include refid="selectPpSlideRecordVo"/>-->
+        SELECT
+        slide.id,
+        slide.from_uid,
+        slide.to_uid,
+        slide.create_time ,
+        memb.nickname fromUname,
+        memb2.nickname toUname
+        FROM
+        pp_slide_record slide
+        LEFT join pp_member memb on slide.from_uid = memb.id
+        LEFT join pp_member memb2 on slide.to_uid = memb2.id
+        <where>
+            <if test="fromUid != null "> and slide.from_uid = #{fromUid}</if>
+            <if test="toUid != null "> and slide.to_uid = #{toUid}</if>
+            <if test="fromUname != null and fromUname != ''"> and memb.nickname like concat("%",#{fromUname},"%") </if>
+            <if test="toUname != null and toUname !=''"> and memb2.nickname like concat("%",#{toUname},"%") </if>
+        </where>
+    </select>
+
+    <select id="selectPpSlideRecordById" parameterType="Long" resultMap="PpSlideRecordResult">
+        <include refid="selectPpSlideRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertPpSlideRecord" parameterType="com.pengpeng.v4.pojo.slide.PpSlideRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into pp_slide_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fromUid != null ">from_uid,</if>
+            <if test="toUid != null ">to_uid,</if>
+            <if test="createTime != null ">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fromUid != null ">#{fromUid},</if>
+            <if test="toUid != null ">#{toUid},</if>
+            <if test="createTime != null ">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updatePpSlideRecord" parameterType="com.pengpeng.v4.pojo.slide.PpSlideRecord">
+        update pp_slide_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fromUid != null ">from_uid = #{fromUid},</if>
+            <if test="toUid != null ">to_uid = #{toUid},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePpSlideRecordById" parameterType="Long">
+        delete from pp_slide_record where id = #{id}
+    </delete>
+
+    <delete id="deletePpSlideRecordByIds" parameterType="String">
+        delete from pp_slide_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

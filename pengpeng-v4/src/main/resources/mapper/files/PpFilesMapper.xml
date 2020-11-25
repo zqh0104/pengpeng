@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.files.PpFilesMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.files.PpFiles" id="PpFilesResult">
+        <result property="id"    column="id"    />
+        <result property="fileId"    column="file_id"    />
+        <result property="fileUrl"    column="file_url"    />
+        <result property="fileType"    column="file_type"    />
+        <result property="fileSource"    column="file_source"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="violation"    column="violation"    />
+        <collection property="ppDynamicsList" ofType="com.pengpeng.v4.pojo.dynamic.PpDynamic">
+            <result property="id" column="id"/>
+            <result property="userId" column="user_id"/>
+            <result property="dynamicContent" column="dynamic_content"/>
+            <result property="fileUrl" column="file_url"/>
+            <result property="commendNum" column="commend_num"/>
+            <result property="position" column="position"/>
+            <result property="fileType" column="file_type"/>
+            <result property="status" column="status"/>
+            <result property="longitude" column="longitude"/>
+            <result property="latitude" column="latitude"/>
+            <result property="createTime" column="create_time"/>
+            <result property="updateTime" column="update_time"/>
+
+            <association property="ppCommendRecord" javaType="com.pengpeng.v4.pojo.dynamic.PpCommendRecord">
+                <result property="id"    column="id"    />
+                <result property="dynamicId"    column="dynamic_id"/>
+                <result property="userId"    column="user_id"    />
+                <result property="toUid"    column="to_uId"    />
+                <result property="status"    column="status"    />
+                <result property="createTime"    column="create_time"    />
+                <result property="updateTime"    column="update_time"    />
+                <result property="headImage"    column="head_url"    />
+                <result property="fileUrl"    column="file_url"    />
+                <result property="fileType"    column="file_type"    />
+            </association>
+        </collection>
+    </resultMap>
+
+    <resultMap type="com.pengpeng.v4.pojo.files.PpFiles" id="PpFilesResult2">
+        <result property="id"    column="id"    />
+        <result property="fileId"    column="file_id"    />
+        <result property="fileUrl"    column="file_url"    />
+        <result property="fileType"    column="file_type"    />
+        <result property="fileSource"    column="file_source"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="violation"    column="violation"    />
+    </resultMap>
+
+    <resultMap type="com.pengpeng.v4.pojo.files.PpFiles" id="PpFilesCommentPpCommendRecord">
+        <result property="id"    column="id"    />
+        <result property="fileId"    column="file_id"    />
+        <result property="fileUrl"    column="file_url"    />
+        <result property="fileType"    column="file_type"    />
+        <result property="fileSource"    column="file_source"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="violation"    column="violation"    />
+        <collection property="ppDynamicsList" ofType="com.pengpeng.v4.pojo.dynamic.PpDynamic">
+            <result property="id" column="id"/>
+            <result property="userId" column="user_id"/>
+            <result property="dynamicContent" column="dynamic_content"/>
+            <result property="fileUrl" column="file_url"/>
+            <result property="commendNum" column="commend_num"/>
+            <result property="position" column="position"/>
+            <result property="fileType" column="file_type"/>
+            <result property="status" column="status"/>
+            <result property="longitude" column="longitude"/>
+            <result property="latitude" column="latitude"/>
+            <result property="createTime" column="create_time"/>
+            <result property="updateTime" column="update_time"/>
+        </collection>
+
+        <collection property="ppCommentList" ofType="com.pengpeng.v4.pojo.comment.PpComment">
+            <result property="id"    column="id"    />
+            <result property="dynamicId"    column="dynamic_id"    />
+            <result property="fromUid"    column="from_uid"    />
+            <result property="toUid"    column="to_uid"    />
+            <result property="comment"    column="comment"    />
+            <result property="parentId"    column="parent_id"    />
+            <result property="type"    column="type"    />
+            <result property="treeCode"    column="tree_code"    />
+            <result property="tree"    column="tree"    />
+            <result property="createTime"    column="create_time"    />
+            <result property="updateTime"    column="update_time"    />
+            <result property="headImage"    column="head_url"    />
+            <result property="fileUrl"    column="file_url"    />
+            <result property="fileType"    column="file_type"    />
+        </collection>
+    </resultMap>
+
+    <resultMap type="com.pengpeng.v4.pojo.comment.PpComment" id="CommentPpCommendRecord">
+        <result property="id"    column="id"    />
+        <result property="fileId"    column="file_id"    />
+        <result property="fileUrl"    column="file_url"    />
+        <result property="fileType"    column="file_type"    />
+        <result property="fileSource"    column="file_source"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="violation"    column="violation"    />
+        <result property="dynamicContent" column="dynamic_content"/>
+        <result property="fileUrl" column="file_url"/>
+        <result property="nickname" column="nickname"/>
+        <result property="headUrl" column="head_url"/>
+        <result property="violation" column="violation"/>
+    </resultMap>
+
+    <sql id="selectPpFilesVo">
+        select id, file_id, file_url, file_type, file_source, create_time from pp_files
+    </sql>
+
+    <select id="selectPpFilesList" parameterType="com.pengpeng.v4.pojo.files.PpFiles" resultMap="PpFilesResult">
+        <include refid="selectPpFilesVo"/>
+        <where>  
+            <if test="fileId != null "> and file_id = #{fileId}</if>
+            <if test="fileUrl != null  and fileUrl != ''"> and file_url = #{fileUrl}</if>
+            <if test="fileType != null "> and file_type = #{fileType}</if>
+            <if test="fileSource != null "> and file_source = #{fileSource}</if>
+        </where>
+    </select>
+    
+    <select id="selectPpFilesById" parameterType="Long" resultMap="PpFilesResult">
+        <include refid="selectPpFilesVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectPpFilesByFileIdAndFileSourceLimitOne" resultMap="PpFilesResult">
+        select * from pp_files where file_id = #{fileId} and file_source = #{Source} limit 1
+    </select>
+
+    <select id="selectPpFilesByFileIdAndFileSourceAll" resultMap="PpFilesResult2">
+        select * from pp_files where file_id = #{fileId} and file_source = #{Source}
+
+    </select>
+    <insert id="insertPpFiles" parameterType="com.pengpeng.v4.pojo.files.PpFiles" useGeneratedKeys="true" keyProperty="id">
+        insert into pp_files
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fileId != null ">file_id,</if>
+            <if test="fileUrl != null  and fileUrl != ''">file_url,</if>
+            <if test="fileType != null ">file_type,</if>
+            <if test="fileSource != null ">file_source,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fileId != null ">#{fileId},</if>
+            <if test="fileUrl != null  and fileUrl != ''">#{fileUrl},</if>
+            <if test="fileType != null ">#{fileType},</if>
+            <if test="fileSource != null ">#{fileSource},</if>
+            <if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+    <insert id="insertBatchPpFiles">
+        <foreach item="file" index="index" collection="ppFiles.files"
+                 separator=";">
+            INSERT INTO pp_files(file_id,file_url,file_type,file_source) VALUES(#{ppFiles.fileId},#{file},#{ppFiles.fileType},#{ppFiles.fileSource})
+        </foreach>
+
+    </insert>
+
+    <update id="updatePpFiles" parameterType="com.pengpeng.v4.pojo.files.PpFiles">
+        update pp_files
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fileId != null ">file_id = #{fileId},</if>
+            <if test="fileUrl != null  and fileUrl != ''">file_url = #{fileUrl},</if>
+            <if test="fileType != null ">file_type = #{fileType},</if>
+            <if test="fileSource != null ">file_source = #{fileSource},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <update id="uploadPpFilesByUrlAndType">
+        update pp_files set violation = 2
+        where file_type = #{fileType} and file_url = #{url}
+    </update>
+
+    <delete id="deletePpFilesById" parameterType="Long">
+        delete from pp_files where id = #{id}
+    </delete>
+
+    <delete id="deletePpFilesByIds" parameterType="String">
+        delete from pp_files where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="lkePhotograph" resultMap="PpFilesResult">
+        select * from  pp_files WHERE file_id in
+        (
+	        select t1.id from  pp_dynamic t1
+		    join (SELECT dynamic_id from pp_commend_record
+	              where user_id = #{userId} and status = 1 ORDER BY create_time desc) t2
+            on  t1.id = t2.dynamic_id
+        where t1.status = 1 )
+        and file_type = 1 and file_source = 1
+    </select>
+
+    <select id="lkeVideo" resultMap="PpFilesResult">
+        select * from  pp_files WHERE file_id in
+        (
+	        select t1.id from  pp_dynamic t1
+		    join (SELECT dynamic_id from pp_commend_record
+	              where user_id = #{userId} and status = 1 ORDER BY create_time desc) t2
+            on  t1.id = t2.dynamic_id
+        where t1.status = 1 )
+        and file_type = 2 and file_source = 1
+    </select>
+
+    <select id="lkeDynamic" resultMap="PpFilesResult">
+        select * from  pp_files WHERE file_id in
+        (
+	        select t1.id from  pp_dynamic t1
+		    join (SELECT dynamic_id from pp_commend_record
+	              where user_id = #{userId} and status = 1 ORDER BY create_time desc) t2
+            on  t1.id = t2.dynamic_id
+            where t1.status = 1 )
+        and file_source = 1
+    </select>
+
+    <select id="commentDynamic" resultMap="CommentPpCommendRecord">
+        select t1.*,t2.dynamic_content as dynamic_content,t3.file_url as file_url,t3.violation as violation,t5.nickname as nickname,t5.head_url as head_url
+        from  pp_comment t1
+        left join pp_dynamic t2 on t1.dynamic_id = t2.id and t2.status = 1
+        left join pp_files t3 on t1.dynamic_id = t3.file_id and t3.file_source=1
+        left join pp_member t5 on t1.from_uid = t5.id
+        where t1.from_uid = #{userId} and t1.type = 1 and t1.status = 1
+        ORDER BY t1.create_time desc
+    </select>
+
+    <select id="selectUserPhotograph" resultMap="PpFilesResult2">
+        <include refid="selectPpFilesVo"/>
+        where file_source = 3 and file_id= #{userId}
+    </select>
+
+    <insert id="insertPicture">
+        INSERT INTO pp_files(file_id,file_url,file_type,file_source,create_time) VALUES(#{fileId},#{fileUrl},1,3,NOW())
+    </insert>
+
+    <update id="updateUserFiles">
+        update pp_files set file_url = #{url}
+        where id = #{id}
+    </update>
+</mapper>

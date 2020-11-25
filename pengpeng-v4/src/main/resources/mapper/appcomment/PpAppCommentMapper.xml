@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.appcomment.PpAppCommentMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.appcomment.PpAppComment" id="PpAppCommentResult">
+        <result property="id"    column="id"    />
+        <result property="commentId"    column="comment_id"    />
+        <result property="starLevel"    column="star_level"    />
+        <result property="headline"    column="headline"    />
+        <result property="content"    column="content"    />
+    </resultMap>
+
+    <sql id="selectPpAppCommentVo">
+        select id, comment_id, star_level, headline, content from pp_app_comment
+    </sql>
+
+    <select id="selectPpAppCommentList" parameterType="com.pengpeng.v4.pojo.appcomment.PpAppComment" resultMap="PpAppCommentResult">
+        <include refid="selectPpAppCommentVo"/>
+        <where>  
+            <if test="commentId != null "> and comment_id = #{commentId}</if>
+            <if test="starLevel != null "> and star_level = #{starLevel}</if>
+            <if test="headline != null  and headline != ''"> and headline = #{headline}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+        </where>
+    </select>
+    
+    <select id="selectPpAppCommentById" parameterType="Long" resultMap="PpAppCommentResult">
+        <include refid="selectPpAppCommentVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPpAppComment" parameterType="com.pengpeng.v4.pojo.appcomment.PpAppComment" useGeneratedKeys="true" keyProperty="id">
+        insert into pp_app_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="commentId != null ">comment_id,</if>
+            <if test="starLevel != null ">star_level,</if>
+            <if test="headline != null  and headline != ''">headline,</if>
+            <if test="content != null  and content != ''">content,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="commentId != null ">#{commentId},</if>
+            <if test="starLevel != null ">#{starLevel},</if>
+            <if test="headline != null  and headline != ''">#{headline},</if>
+            <if test="content != null  and content != ''">#{content},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePpAppComment" parameterType="com.pengpeng.v4.pojo.appcomment.PpAppComment">
+        update pp_app_comment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="commentId != null ">comment_id = #{commentId},</if>
+            <if test="starLevel != null ">star_level = #{starLevel},</if>
+            <if test="headline != null  and headline != ''">headline = #{headline},</if>
+            <if test="content != null  and content != ''">content = #{content},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePpAppCommentById" parameterType="Long">
+        delete from pp_app_comment where id = #{id}
+    </delete>
+
+    <delete id="deletePpAppCommentByIds" parameterType="String">
+        delete from pp_app_comment where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectUser" resultMap="PpAppCommentResult">
+        <include refid="selectPpAppCommentVo"/>
+        where comment_id = #{userId}
+    </select>
+    
+</mapper>

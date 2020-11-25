@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('余额变动 不可提取列表')"/>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+<!--                        <li>-->
+<!--                            <p>充值记录表id || 礼物赠送记录表id：</p>-->
+<!--                            <input type="text" name="otherId"/>-->
+<!--                        </li>-->
+                        <li>
+                            <p>用户id：</p>
+                            <input type="text" name="userId"/>
+                        </li>
+                        <li>
+                            <p>类型：</p>
+                            <select name="type">
+                                <option value="">所有</option>
+                                <option value="1">充值</option>
+                                <option value="2">赠送礼物</option>
+                            </select>
+                        </li>
+                        <li>
+                            <p>变动金额：</p>
+                            <input type="text" name="balaceAlterationGold"/>
+                        </li>
+                        <li class="select-time">
+                            <p>消费时间：</p>
+                            <input type="text" class="time-input" id="startTime" placeholder="开始时间"
+                                   name="params[beginBalaceAlterationTime]"/>
+                            <span>-</span>
+                            <input type="text" class="time-input" id="endTime" placeholder="结束时间"
+                                   name="params[endBalaceAlterationTime]"/>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                    class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                    class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm" id="toolbar" role="group">
+<!--            <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:record:add">-->
+<!--                <i class="fa fa-plus"></i> 添加-->
+<!--            </a>-->
+<!--            <a class="btn btn-primary single disabled" onclick="$.operate.edit()"-->
+<!--               shiro:hasPermission="system:record:edit">-->
+<!--                <i class="fa fa-edit"></i> 修改-->
+<!--            </a>-->
+            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()"
+               shiro:hasPermission="system:record:remove">
+                <i class="fa fa-remove"></i> 删除
+            </a>
+            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:record:export">
+                <i class="fa fa-download"></i> 导出
+            </a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('system:record:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('system:record:remove')}]];
+    var prefix = ctx + "app/blance";
+
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "余额变动 不可提取",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'balanceId',
+                    title: '余额表id ',
+                    visible: false
+                },
+                {
+                    field: 'otherId',
+                    title: '充值记录表id || 礼物赠送记录表id',
+                    visible: false
+                },
+                {
+                    field: 'userId',
+                    title: '用户id'
+                },
+                {
+                    field: 'nickname',
+                    title: '用户昵称'
+                },
+                {
+                    field: 'type',
+                    title: '类型',
+                    formatter: function (value, row, index) {
+                        return value == 1 ? "充值" : "赠送"
+                    }
+                },
+                {
+                    field: 'balaceAlterationGold',
+                    title: '变动金额'
+                },
+                {
+                    field: 'balaceAlterationTime',
+                    title: '消费时间'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        // actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.balanceId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.balanceId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    });
+</script>
+</body>
+</html>

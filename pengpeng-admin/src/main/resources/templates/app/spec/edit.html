@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改会员规格')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-spec-edit" th:object="${ppMemberSpec}">
+            <input name="id" th:field="*{id}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">原价：</label>
+                <div class="col-sm-8">
+                    <input name="memberMoney" th:field="*{memberMoney}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">现价：</label>
+                <div class="col-sm-8">
+                    <input name="currentPrice" th:field="*{currentPrice}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">时间：</label>
+                <div class="col-sm-8">
+                    <input name="memberSecond" th:field="*{memberSecond}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">时间类型：</label>
+                <div class="col-sm-8">
+                    <select name="memberSecondType" class="form-control m-b">
+                        <!--<option th:value="year">year</option>-->
+                        <option th:value="month">month</option>
+                        <!--<option th:value="day">day</option>
+                        <option th:value="hour">hour</option>-->
+                    </select>
+                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 代码生成请选择字典属性</span>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript">
+        var prefix = ctx + "app/spec";
+        $("#form-spec-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-spec-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

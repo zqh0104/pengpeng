@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.system.mapper.SysCountryMapper">
+    
+    <resultMap type="com.pengpeng.system.domain.SysCountry" id="SysCountryResult">
+        <result property="id"    column="id"    />
+        <result property="country"    column="country"    />
+        <result property="value"    column="value"    />
+        <result property="code"    column="code"    />
+    </resultMap>
+
+    <sql id="selectSysCountryVo">
+        select id, country, code from sys_country
+    </sql>
+
+    <select id="selectSysCountryList" parameterType="com.pengpeng.system.domain.SysCountry" resultMap="SysCountryResult">
+<!--        <include refid="selectSysCountryVo"/>-->
+<!--        <where>  -->
+<!--            <if test="country != null  and country != ''"> and country like concat('%', #{country}, '%')</if>-->
+<!--            <if test="code != null  and code != ''"> and code = #{code}</if>-->
+<!--        </where>-->
+
+        SELECT
+        *,
+        ( SELECT GET_FIRST_PINYIN_CHAR ( country ) ) AS
+        VALUE
+
+        FROM
+        `sys_country`
+        ORDER BY
+        CONVERT ( country USING gbk )
+    </select>
+    
+    <select id="selectSysCountryById" parameterType="Long" resultMap="SysCountryResult">
+        <include refid="selectSysCountryVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysCountry" parameterType="com.pengpeng.system.domain.SysCountry" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_country
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="countryCnName != null  and countryCnName != ''">country_cn_name,</if>
+            <if test="countryEnName != null  and countryEnName != ''">country_en_name,</if>
+            <if test="code != null  and code != ''">code,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="countryCnName != null  and countryCnName != ''">#{countryCnName},</if>
+            <if test="countryEnName != null  and countryEnName != ''">#{countryEnName},</if>
+            <if test="code != null  and code != ''">#{code},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysCountry" parameterType="com.pengpeng.system.domain.SysCountry">
+        update sys_country
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="countryCnName != null  and countryCnName != ''">country_cn_name = #{countryCnName},</if>
+            <if test="countryEnName != null  and countryEnName != ''">country_en_name = #{countryEnName},</if>
+            <if test="code != null  and code != ''">code = #{code},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysCountryById" parameterType="Long">
+        delete from sys_country where id = #{id}
+    </delete>
+
+    <delete id="deleteSysCountryByIds" parameterType="String">
+        delete from sys_country where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

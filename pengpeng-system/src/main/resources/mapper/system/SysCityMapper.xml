@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.system.mapper.SysCityMapper">
+    
+    <resultMap type="com.pengpeng.system.domain.SysCity" id="SysCityResult">
+        <result property="id"    column="id"    />
+        <result property="countryId"    column="country_id"    />
+        <result property="city"    column="city"    />
+        <collection property="districtList" ofType="com.pengpeng.system.domain.SysDistrict" >
+            <result property="cityId"    column="city_id"    />
+            <result property="district"    column="district"    />
+        </collection>
+    </resultMap>
+
+
+    <resultMap type="com.pengpeng.system.domain.SysCountry" id="SysCountryResult">
+        <result property="id"    column="id"    />
+        <result property="country"    column="country"    />
+        <result property="code"    column="code"    />
+        <collection property="cityList" ofType="com.pengpeng.system.domain.SysCity" >
+            <result property="countryId"    column="country_id"    />
+            <result property="city"    column="city"    />
+            <collection property="districtList" ofType="com.pengpeng.system.domain.SysDistrict" >
+                <result property="cityId"    column="city_id"    />
+                <result property="district"    column="district"    />
+            </collection>
+        </collection>
+    </resultMap>
+
+    <sql id="selectSysCityVo">
+        select id, country_id, city from sys_city
+    </sql>
+
+    <select id="selectSysCityList" parameterType="com.pengpeng.system.domain.SysCity" resultMap="SysCountryResult">
+        SELECT country.*,city.*,dis.* FROM sys_country country LEFT JOIN sys_city city on country.id = city.country_id
+
+        LEFT JOIN sys_district dis on city.id = dis.city_id
+<!--        <include refid="selectSysCityVo"/>-->
+        <where>
+            <if test="countryId != null "> and country_id = #{countryId}</if>
+            <if test="city != null  and city != ''"> and city = #{city}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysCityById" parameterType="Long" resultMap="SysCityResult">
+        <include refid="selectSysCityVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysCity" parameterType="com.pengpeng.system.domain.SysCity" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_city
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="countryId != null ">country_id,</if>
+            <if test="city != null  and city != ''">city,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="countryId != null ">#{countryId},</if>
+            <if test="city != null  and city != ''">#{city},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysCity" parameterType="com.pengpeng.system.domain.SysCity">
+        update sys_city
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="countryId != null ">country_id = #{countryId},</if>
+            <if test="city != null  and city != ''">city = #{city},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysCityById" parameterType="Long">
+        delete from sys_city where id = #{id}
+    </delete>
+
+    <delete id="deleteSysCityByIds" parameterType="String">
+        delete from sys_city where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

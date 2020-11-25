@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.income.PpIncomeMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.income.PpIncome" id="PpIncomeResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="userName"    />
+        <result property="presenterId"    column="presenter_id"    />
+        <result property="persentName"    column="persentName"    />
+        <result property="presenterGift"    column="presenter_gift"    />
+        <result property="incomeMoney"    column="income_money"    />
+        <result property="incomeTime"    column="income_time"    />
+    </resultMap>
+
+    <resultMap type="com.pengpeng.v4.pojo.income.PpIncome" id="PpIncomeGiftResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="presenterId"    column="presenter_id"    />
+        <result property="presenterGift"    column="presenter_gift"    />
+        <result property="incomeMoney"    column="income_money"    />
+        <result property="incomeTime"    column="income_time"    />
+        <result property="giftNumber" column="gift_number"/>
+    </resultMap>
+
+    <resultMap type="com.pengpeng.v4.pojo.income.PpIncome" id="PpIncomeMemberResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="presenterId"    column="presenter_id"    />
+        <result property="presenterGift"    column="presenter_gift"    />
+        <result property="incomeMoney"    column="income_money"    />
+        <result property="incomeTime"    column="income_time"    />
+        <result property="giftNumber" column="gift_number"/>
+
+        <association property="ppMember" javaType="com.pengpeng.v4.pojo.member.PpMember">
+            <result property="id"    column="id"    />
+            <result property="nickname"    column="nickname"    />
+            <result property="sex"    column="sex"    />
+            <result property="headUrl"    column="head_url"    />
+            <result property="birthday"    column="birthday"    />
+            <result property="stature"    column="stature"    />
+            <result property="distance"    column="distance"    />
+            <result property="weight"    column="weight"    />
+            <result property="signature"    column="signature"    />
+            <result property="constellation"    column="constellation"    />
+            <result property="hobby"    column="hobby"    />
+            <result property="profession"    column="profession"    />
+            <result property="picture"    column="picture"    />
+            <result property="invitationCode"    column="Invitation_code"    />
+            <result property="emotionStatus"    column="emotion_status"    />
+            <result property="makeFriendsPurpose"    column="make_friends_purpose"    />
+            <result property="city"    column="city"    />
+            <result property="country"    column="country"    />
+            <result property="address"    column="address"    />
+            <result property="phone"    column="phone"    />
+            <result property="code"    column="code"    />
+            <result property="longitude"    column="longitude"    />
+            <result property="latitude"    column="latitude"    />
+            <result property="isvip"    column="isvip"    />
+            <result property="attribute"    column="attribute"    />
+            <result property="vipOpenTime"    column="vip_open_time"    />
+            <result property="vipCloseTime"    column="vip_close_time"    />
+            <result property="balance"    column="balance"    />
+            <result property="earnings"    column="earnings"    />
+            <result property="treasure"    column="treasure"    />
+            <result property="treasureLevel"    column="treasure_level"    />
+            <result property="createTime"    column="create_time"    />
+            <result property="updateTime"    column="update_time"    />
+            <result property="parentId" column="parent_id"/>
+        </association>
+    </resultMap>
+
+    <sql id="selectPpIncomeVo">
+        select id, user_id, presenter_id, presenter_gift, income_money, income_time,gift_number from pp_income
+    </sql>
+
+    <select id="selectPpIncomeList" parameterType="com.pengpeng.v4.pojo.income.PpIncome" resultMap="PpIncomeResult">
+        SELECT
+        income.id,
+        income.user_id,
+        income.presenter_id,
+        income.presenter_gift,
+        income.income_money,
+        income.income_time,
+        memb.nickname userName ,
+        memb2.nickname AS persentName
+        FROM
+        pp_income income
+        LEFT JOIN pp_member memb ON memb.id = income.user_id
+        LEFT JOIN pp_member memb2 ON memb2.id = income.presenter_id
+        <!--        <include refid="selectPpIncomeVo"/>-->
+        <where>
+            <if test="userId != null "> and income.user_id = #{userId}</if>
+            <if test="presenterId != null "> and income.presenter_id = #{presenterId}</if>
+            <if test="presenterGift != null  and presenterGift != ''"> and income.presenter_gift like concat("%",#{presenterGift},"%")</if>
+            <if test="incomeMoney != null  and incomeMoney != ''"> and income.income_money = #{incomeMoney}</if>
+            <if test="incomeTime != null "> and income.income_time = #{incomeTime}</if>
+            <if test="persentName != null and persentName !=''"> and memb2.nickname like concat("%",#{persentName},"%")</if>
+            <if test="userName != null and userName!=''"> and memb.nickname like concat("%",#{userName},"%")</if>
+            <if test="params.beginIncomeTime != null and params.beginIncomeTime !=''"> and income.income_time &gt;= #{params.beginIncomeTime}</if>
+            <if test="params.endIncomeTime != null and params.endIncomeTime!=''"> and income.income_time &lt;= #{params.endIncomeTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectPpIncomeById" parameterType="Long" resultMap="PpIncomeResult">
+        <include refid="selectPpIncomeVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPpIncome" parameterType="com.pengpeng.v4.pojo.income.PpIncome">
+        insert into pp_income
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="userId != null ">user_id,</if>
+            <if test="presenterId != null ">presenter_id,</if>
+            <if test="presenterGift != null  and presenterGift != ''">presenter_gift,</if>
+            <if test="incomeMoney != null  and incomeMoney != ''">income_money,</if>
+            <if test="incomeTime != null ">income_time,</if>
+            <if test="giftNumber != null ">gift_number,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="userId != null ">#{userId},</if>
+            <if test="presenterId != null ">#{presenterId},</if>
+            <if test="presenterGift != null  and presenterGift != ''">#{presenterGift},</if>
+            <if test="incomeMoney != null  and incomeMoney != ''">#{incomeMoney},</if>
+            <if test="incomeTime != null ">#{incomeTime},</if>
+            <if test="giftNumber != null ">#{giftNumber},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePpIncome" parameterType="com.pengpeng.v4.pojo.income.PpIncome">
+        update pp_income
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="presenterId != null ">presenter_id = #{presenterId},</if>
+            <if test="presenterGift != null  and presenterGift != ''">presenter_gift = #{presenterGift},</if>
+            <if test="incomeMoney != null  and incomeMoney != ''">income_money = #{incomeMoney},</if>
+            <if test="incomeTime != null ">income_time = #{incomeTime},</if>
+            <if test="giftNumber != null ">gift_number = #{giftNumber},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePpIncomeById" parameterType="Long">
+        delete from pp_income where id = #{id}
+    </delete>
+
+    <delete id="deletePpIncomeByIds" parameterType="String">
+        delete from pp_income where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectIncomeUser" resultMap="PpIncomeMemberResult">
+        select t1.*,t2.* from pp_income t1
+        left join pp_member t2
+        on t1.presenter_id = t2.id
+        where t1.user_id= #{userId}
+        ORDER BY t1.income_time desc
+    </select>
+
+
+    <select id="selectPpIncomeTew" parameterType="com.pengpeng.v4.pojo.income.PpIncome" resultMap="PpIncomeGiftResult">
+        <include refid="selectPpIncomeVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="presenterId != null "> and presenter_id = #{presenterId}</if>
+            <if test="presenterGift != null  and presenterGift != ''"> and presenter_gift = #{presenterGift}</if>
+            <if test="incomeMoney != null  and incomeMoney != ''"> and income_money = #{incomeMoney}</if>
+            <if test="incomeTime != null "> and income_time = #{incomeTime}</if>
+            <if test="giftNumber != null "> and gift_number = #{giftNumber}</if>
+        </where>
+    </select>
+</mapper>

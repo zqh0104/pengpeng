@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.privacy.SysPrivacyClauseMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.privacy.SysPrivacyClause" id="SysPrivacyClauseResult">
+        <result property="id"    column="id"    />
+        <result property="clauseContent"    column="clause_content"    />
+    </resultMap>
+
+    <sql id="selectSysPrivacyClauseVo">
+        select id, clause_content from sys_privacy_clause
+    </sql>
+
+    <select id="selectSysPrivacyClauseList" parameterType="com.pengpeng.v4.pojo.privacy.SysPrivacyClause" resultMap="SysPrivacyClauseResult">
+        <include refid="selectSysPrivacyClauseVo"/>
+        <where>  
+            <if test="clauseContent != null  and clauseContent != ''"> and clause_content = #{clauseContent}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysPrivacyClauseById" parameterType="Long" resultMap="SysPrivacyClauseResult">
+        <include refid="selectSysPrivacyClauseVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysPrivacyClause" parameterType="com.pengpeng.v4.pojo.privacy.SysPrivacyClause" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_privacy_clause
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="clauseContent != null  and clauseContent != ''">clause_content,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="clauseContent != null  and clauseContent != ''">#{clauseContent},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysPrivacyClause" parameterType="com.pengpeng.v4.pojo.privacy.SysPrivacyClause">
+        update sys_privacy_clause
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="clauseContent != null  and clauseContent != ''">clause_content = #{clauseContent},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysPrivacyClauseById" parameterType="Long">
+        delete from sys_privacy_clause where id = #{id}
+    </delete>
+
+    <delete id="deleteSysPrivacyClauseByIds" parameterType="String">
+        delete from sys_privacy_clause where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.note.PpNoteMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.note.PpNote" id="PpNoteResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userNote"    column="user_note"    />
+        <result property="phone"    column="phone"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="type"    column="type"    />
+    </resultMap>
+
+    <sql id="selectPpNoteVo">
+        select id, user_id, user_note, phone, status, create_time, type from pp_note
+    </sql>
+
+    <select id="selectPpNoteList" parameterType="com.pengpeng.v4.pojo.note.PpNote" resultMap="PpNoteResult">
+        <include refid="selectPpNoteVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userNote != null  and userNote != ''"> and user_note = #{userNote}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="type != null "> and type = #{type}</if>
+        </where>
+    </select>
+    
+    <select id="selectPpNoteById" parameterType="Long" resultMap="PpNoteResult">
+        <include refid="selectPpNoteVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPpNote" parameterType="com.pengpeng.v4.pojo.note.PpNote" useGeneratedKeys="true" keyProperty="id">
+        insert into pp_note
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">user_id,</if>
+            <if test="userNote != null  and userNote != ''">user_note,</if>
+            <if test="phone != null  and phone != ''">phone,</if>
+            <if test="status != null ">status,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="type != null ">type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">#{userId},</if>
+            <if test="userNote != null  and userNote != ''">#{userNote},</if>
+            <if test="phone != null  and phone != ''">#{phone},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="type != null ">#{type},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePpNote" parameterType="com.pengpeng.v4.pojo.note.PpNote">
+        update pp_note
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="userNote != null  and userNote != ''">user_note = #{userNote},</if>
+            <if test="phone != null  and phone != ''">phone = #{phone},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="type != null ">type = #{type},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePpNoteById" parameterType="Long">
+        delete from pp_note where id = #{id}
+    </delete>
+
+    <delete id="deletePpNoteByIds" parameterType="String">
+        delete from pp_note where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

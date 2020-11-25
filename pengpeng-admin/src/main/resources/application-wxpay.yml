@@ -1,0 +1,6 @@
+wx:
+  app:
+    appId: wxdee12345681703e8
+    mchId: 1512345671
+    key: 86799C8812345675C82F3FE33FFE7EE3
+    notifyUrl: https://test.shuai.com/wxPayCallback

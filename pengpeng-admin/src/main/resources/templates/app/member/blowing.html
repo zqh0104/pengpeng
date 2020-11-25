@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('用户举报列表')"/>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <p>用户id：</p>
+                            <input type="text" name="userId"/>
+                        </li>
+                        <li>
+                            <p>被举报用户id：</p>
+                            <input type="text" name="reportUserId"/>
+                        </li>
+                        <li>
+                            <p>举报内容：</p>
+                            <input type="text" name="reportContent"/>
+                        </li>
+                        <li>
+                            <p>举报类型：</p>
+                            <select name="reportType" th:with="type=${@dict.getType('')}">
+                                <option value="">所有</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                                        th:value="${dict.dictValue}"></option>
+                            </select>
+                        </li>
+                        <li>
+                            <p>举报图片：</p>
+                            <input type="text" name="reportImage"/>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                    class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                    class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm" id="toolbar" role="group">
+<!--            <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:blowing:add">-->
+<!--                <i class="fa fa-plus"></i> 添加-->
+<!--            </a>-->
+<!--            <a class="btn btn-primary single disabled" onclick="$.operate.edit()"-->
+<!--               shiro:hasPermission="system:blowing:edit">-->
+<!--                <i class="fa fa-edit"></i> 修改-->
+<!--            </a>-->
+            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()"
+               shiro:hasPermission="system:blowing:remove">
+                <i class="fa fa-remove"></i> 删除
+            </a>
+            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:blowing:export">
+                <i class="fa fa-download"></i> 导出
+            </a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('system:blowing:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('system:blowing:remove')}]];
+    var prefix = ctx + "app/member/blowing";
+
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "用户举报",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: '举报图片',
+                    visible: false
+                },
+                {
+                    field: 'userId',
+                    title: '举报人id'
+                },
+                {
+                    field: 'nickname',
+                    title: '举报人昵称'
+                },
+                {
+                    field: 'reportUserName',
+                    title: '被举报人昵称'
+                },
+                {
+                    field: 'reportContent',
+                    title: '举报内容'
+                },
+                {
+                    field: 'reportType',
+                    title: '举报类型'
+                },
+                {
+                    field: 'reportImages',
+                    title: '举报图片',
+                    formatter: function (value, row, index) {
+                        if (value != null && value.length > 0) {
+                            var str = '';
+                            for (var i = 0; i < value.length; i++) {
+                                str += "<img src='" + value[i].fileUrl + "' style='width: 50px'/>"
+                            }
+                            return str;
+                        }
+                    }
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="closure(\'' + row.reportUserId + '\')"><i class="fa fa-edit"></i>封停</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    });
+
+    function closure(id) {
+        $.modal.confirm("确认封停用户？",function(){
+            $.operate.post(  "/app/member/edit",{
+                status:0,
+                id:id
+            },null);
+        })
+
+    }
+</script>
+</body>
+</html>

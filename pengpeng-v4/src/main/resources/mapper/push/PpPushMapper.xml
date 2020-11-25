@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.push.PpPushMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.push.PpPush" id="PpPushResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="pushContent"    column="push_content"    />
+    </resultMap>
+
+    <sql id="selectPpPushVo">
+        select id, user_id, push_content from pp_push
+    </sql>
+
+    <select id="selectPpPushList" parameterType="com.pengpeng.v4.pojo.push.PpPush" resultMap="PpPushResult">
+        <include refid="selectPpPushVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="pushContent != null  and pushContent != ''"> and push_content = #{pushContent}</if>
+        </where>
+    </select>
+    
+    <select id="selectPpPushById" parameterType="Long" resultMap="PpPushResult">
+        <include refid="selectPpPushVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPpPush" parameterType="com.pengpeng.v4.pojo.push.PpPush" useGeneratedKeys="true" keyProperty="id">
+        insert into pp_push
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">user_id,</if>
+            <if test="pushContent != null  and pushContent != ''">push_content,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">#{userId},</if>
+            <if test="pushContent != null  and pushContent != ''">#{pushContent},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePpPush" parameterType="com.pengpeng.v4.pojo.push.PpPush">
+        update pp_push
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="pushContent != null  and pushContent != ''">push_content = #{pushContent},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePpPushById" parameterType="Long">
+        delete from pp_push where id = #{id}
+    </delete>
+
+    <delete id="deletePpPushByIds" parameterType="String">
+        delete from pp_push where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

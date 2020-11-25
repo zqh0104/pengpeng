@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.viporder.PpVipOrderMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.viporder.PpVipOrder" id="PpVipOrderResult">
+        <result property="id"    column="id"    />
+        <result property="memberId"    column="member_id"    />
+        <result property="buyTime"    column="buy_time"    />
+        <result property="loseTime"    column="lose_time"    />
+        <result property="orderNumber" column="order_number"/>
+        <result property="memberSecond" column="member_second"/>
+        <result property="memberSecondType" column="member_second_type"/>
+        <result property="createTime" column="create_time"/>
+        <result property="currentPrice" column="current_price"/>
+    </resultMap>
+
+    <sql id="selectPpVipOrderVo">
+        select id, member_id,order_number,member_second,member_second_type, buy_time, lose_time,create_time from pp_vip_order
+    </sql>
+
+    <select id="selectPpVipOrderList" parameterType="com.pengpeng.v4.pojo.viporder.PpVipOrder" resultMap="PpVipOrderResult">
+        <include refid="selectPpVipOrderVo"/>
+        <where>  
+            <if test="memberId != null "> and member_id = #{memberId}</if>
+            <if test="buyTime != null "> and buy_time = #{buyTime}</if>
+            <if test="loseTime != null "> and lose_time = #{loseTime}</if>
+            <if test="orderNumber != null "> and order_number = #{orderNumber}</if>
+            <if test="memberSecond != null "> and member_second = #{memberSecond}</if>
+            <if test="memberSecondType != null "> and member_second_type = #{memberSecondType}</if>
+            <if test="createTime != null "> and create_time = #{createTime}</if>
+            <if test="currentPrice != null "> and current_price = #{currentPrice}</if>
+        </where>
+    </select>
+    
+    <select id="selectPpVipOrderById" parameterType="Long" resultMap="PpVipOrderResult">
+        <include refid="selectPpVipOrderVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPpVipOrder" parameterType="com.pengpeng.v4.pojo.viporder.PpVipOrder">
+        insert into pp_vip_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="memberId != null ">member_id,</if>
+            <if test="buyTime != null ">buy_time,</if>
+            <if test="loseTime != null ">lose_time,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="orderNumber != null ">order_number,</if>
+            <if test="memberSecond != null ">member_second,</if>
+            <if test="memberSecondType != null ">member_second_type,</if>
+            <if test="currentPrice != null ">current_price,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="memberId != null ">#{memberId},</if>
+            <if test="buyTime != null ">#{buyTime},</if>
+            <if test="loseTime != null ">#{loseTime},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="orderNumber != null ">#{orderNumber},</if>
+            <if test="memberSecond != null ">#{memberSecond},</if>
+            <if test="memberSecondType != null ">#{memberSecondType},</if>
+            <if test="currentPrice != null ">#{currentPrice},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePpVipOrder" parameterType="com.pengpeng.v4.pojo.viporder.PpVipOrder">
+        update pp_vip_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="memberId != null ">member_id = #{memberId},</if>
+            <if test="buyTime != null ">buy_time = #{buyTime},</if>
+            <if test="loseTime != null ">lose_time = #{loseTime},</if>
+            <if test="orderNumber != null ">order_number = #{orderNumber},</if>
+            <if test="memberSecond != null ">member_second = #{memberSecond},</if>
+            <if test="memberSecondType != null ">member_second_type = #{memberSecondType},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="currentPrice != null ">current_price = #{currentPrice},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePpVipOrderById" parameterType="Long">
+        delete from pp_vip_order where id = #{id}
+    </delete>
+
+    <delete id="deletePpVipOrderByIds" parameterType="String">
+        delete from pp_vip_order where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectUser" resultMap="PpVipOrderResult">
+        <include refid="selectPpVipOrderVo"/>
+        where member_id = #{userId}
+    </select>
+
+    <select id="selectOrderNumber" resultMap="PpVipOrderResult">
+        <include refid="selectPpVipOrderVo"/>
+        where order_number = #{orderNumber}
+    </select>
+</mapper>

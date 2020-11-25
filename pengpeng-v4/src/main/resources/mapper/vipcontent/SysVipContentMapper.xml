@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pengpeng.v4.mapper.vipcontent.SysVipContentMapper">
+    
+    <resultMap type="com.pengpeng.v4.pojo.vipcontent.SysVipContent" id="SysVipContentResult">
+        <result property="id"    column="id"    />
+        <result property="vipContent"    column="vip_content"    />
+    </resultMap>
+
+    <sql id="selectSysVipContentVo">
+        select id, vip_content from sys_vip_content
+    </sql>
+
+    <select id="selectSysVipContentList" parameterType="com.pengpeng.v4.pojo.vipcontent.SysVipContent" resultMap="SysVipContentResult">
+        <include refid="selectSysVipContentVo"/>
+        <where>  
+            <if test="vipContent != null  and vipContent != ''"> and vip_content = #{vipContent}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysVipContentById" parameterType="Long" resultMap="SysVipContentResult">
+        <include refid="selectSysVipContentVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysVipContent" parameterType="com.pengpeng.v4.pojo.vipcontent.SysVipContent">
+        insert into sys_vip_content
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="vipContent != null  and vipContent != ''">vip_content,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="vipContent != null  and vipContent != ''">#{vipContent},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysVipContent" parameterType="com.pengpeng.v4.pojo.vipcontent.SysVipContent">
+        update sys_vip_content
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="vipContent != null  and vipContent != ''">vip_content = #{vipContent},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysVipContentById" parameterType="Long">
+        delete from sys_vip_content where id = #{id}
+    </delete>
+
+    <delete id="deleteSysVipContentByIds" parameterType="String">
+        delete from sys_vip_content where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectSysVipContent" resultMap="SysVipContentResult">
+        <include refid="selectSysVipContentVo"/>
+    </select>
+    
+</mapper>
